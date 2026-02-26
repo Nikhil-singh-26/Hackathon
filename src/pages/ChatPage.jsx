@@ -16,7 +16,7 @@ import io from 'socket.io-client';
 
 const API_URL = 'http://localhost:5000';
 const ENDPOINT = 'http://localhost:5000';
-var socket;
+let socket;
 
 export default function ChatPage() {
   const { chatId } = useParams();
@@ -39,7 +39,11 @@ export default function ChatPage() {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
-  }, []);
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [user]);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -70,36 +74,47 @@ export default function ChatPage() {
        } catch(e) {}
     }
 
-    fetchMessages();
-    fetchChatInfo();
-  }, [chatId]);
+    if (socketConnected) {
+      fetchMessages();
+      fetchChatInfo();
+    }
+  }, [chatId, socketConnected]);
 
   useEffect(() => {
-    socket.on("message received", (newMessageReceived) => {
-      if (!chatId || chatId !== newMessageReceived.chat._id) {
-        // notification logic here if needed
+    if (!socket) return;
+
+    const handleMessageReceived = (newMessageReceived) => {
+      if (!chatId || (newMessageReceived.chat._id && chatId !== newMessageReceived.chat._id)) {
+        // Notification logic here
       } else {
-        setMessages([...messages, newMessageReceived]);
+        setMessages((prev) => [...prev, newMessageReceived]);
       }
-    });
-  }, [messages]);
+    };
+
+    socket.on("message received", handleMessageReceived);
+
+    return () => {
+      socket.off("message received", handleMessageReceived);
+    };
+  }, [chatId]);
 
   useEffect(scrollToBottom, [messages]);
 
   const handleSendMessage = async (e) => {
-    if (e.key === "Enter" && newMessage) {
+    if ((e.key === "Enter" || e.type === "click") && newMessage.trim()) {
       try {
         const token = localStorage.getItem('token');
+        const messageText = newMessage;
         setNewMessage("");
         const { data } = await axios.post(`${API_URL}/api/chat/send`, {
-          content: newMessage,
+          content: messageText,
           chatId: chatId
         }, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
         socket.emit("new message", data);
-        setMessages([...messages, data]);
+        setMessages((prev) => [...prev, data]);
       } catch (error) {
         console.error("Send failed", error);
       }
