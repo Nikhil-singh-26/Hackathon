@@ -21,7 +21,15 @@ const signupSchema = z
     email: z
       .string()
       .min(1, 'Email is required')
-      .email('Please enter a valid email address'),
+      .email('Please enter a valid email address')
+      .refine(
+        (val) => {
+          const domain = val.split('@')[1]?.toLowerCase();
+          const allowed = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com', 'aol.com', 'protonmail.com', 'live.com'];
+          return allowed.includes(domain);
+        },
+        { message: 'Please use a trusted email provider (e.g. Gmail, Outlook, Yahoo)' }
+      ),
     password: z
       .string()
       .min(1, 'Password is required')

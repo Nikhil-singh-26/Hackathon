@@ -22,6 +22,12 @@ const signup = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
+    const domain = email.split('@')[1]?.toLowerCase();
+    const allowedDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com', 'aol.com', 'protonmail.com', 'live.com'];
+    if (!allowedDomains.includes(domain)) {
+      return res.status(400).json({ message: "Please use a trusted email provider (e.g. Gmail, Outlook, Yahoo)" });
+    }
+
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {

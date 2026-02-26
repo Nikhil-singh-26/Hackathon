@@ -1,4 +1,5 @@
 import { Star } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import './MarketplacePreview.css';
 
 const vendors = [
@@ -69,7 +70,9 @@ export default function MarketplacePreview() {
                                         <span className="price-label">Starts at</span>
                                         <p>{vendor.price}</p>
                                     </div>
-                                    <button className="glass-btn view-btn">View Profile</button>
+                                    <Link to={`/vendor/${vendor.id}`} className="glass-btn view-btn">
+                                        View Profile
+                                    </Link>
                                 </div>
                             </div>
                         </div>

@@ -9,5 +9,8 @@ router.post("/login", login);
 
 // Protected routes
 router.get("/me", protect, getMe);
+router.post("/logout", protect, (req, res) => {
+    res.status(200).json({ message: "Logout successful" });
+});
 
 module.exports = router;
