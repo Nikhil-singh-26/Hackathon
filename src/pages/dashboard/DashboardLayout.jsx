@@ -1,7 +1,7 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, CalendarDays, BarChart3, Settings,
-  Moon, Sun, LogOut, Home, Bell, User
+  Moon, Sun, LogOut, Home, Bell, User, MessageSquare
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
