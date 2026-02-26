@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Monitor, Smartphone, AlertCircle, ArrowRight } from 'lucide-react';
+import { AlertCircle, ArrowRight } from 'lucide-react';
 
 import AuthLayout from '../../components/auth/AuthLayout';
 import FloatingInput from '../../components/auth/FloatingInput';
@@ -22,22 +22,7 @@ const loginSchema = z.object({
     .min(6, 'Password must be at least 6 characters'),
 });
 
-const MOCK_DEVICES = [
-  {
-    id: 1,
-    name: 'Chrome on Windows',
-    location: 'New Delhi, India',
-    time: '2 hours ago',
-    icon: Monitor,
-  },
-  {
-    id: 2,
-    name: 'Safari on iPhone',
-    location: 'Mumbai, India',
-    time: '5 days ago',
-    icon: Smartphone,
-  },
-];
+
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -125,23 +110,7 @@ export default function LoginPage() {
         </Link>
       </p>
 
-      {/* Mock login history */}
-      <div className="login-devices">
-        <h4>Recent Login Activity</h4>
-        <div className="device-list">
-          {MOCK_DEVICES.map((device) => (
-            <div key={device.id} className="device-item">
-              <div className="device-icon">
-                <device.icon size={16} />
-              </div>
-              <div className="device-info">
-                <strong>{device.name}</strong>
-                <span>{device.location} · {device.time}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+
     </AuthLayout>
   );
 }

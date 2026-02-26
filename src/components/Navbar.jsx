@@ -46,7 +46,6 @@ export default function Navbar() {
                     <a href="/#home">Home</a>
                     <a href="/#features">Features</a>
                     <a href="/#marketplace">Marketplace</a>
-                    <a href="/#history">History</a>
                     <a href="/#achievements">Achievements</a>
                     <a href="/#contact">Contact</a>
                 </div>
@@ -85,7 +84,6 @@ export default function Navbar() {
                     <a href="/#home" onClick={() => setIsOpen(false)}>Home</a>
                     <a href="/#features" onClick={() => setIsOpen(false)}>Features</a>
                     <a href="/#marketplace" onClick={() => setIsOpen(false)}>Marketplace</a>
-                    <a href="/#history" onClick={() => setIsOpen(false)}>History</a>
                     <a href="/#achievements" onClick={() => setIsOpen(false)}>Achievements</a>
                     <a href="/#contact" onClick={() => setIsOpen(false)}>Contact</a>
                     <hr />

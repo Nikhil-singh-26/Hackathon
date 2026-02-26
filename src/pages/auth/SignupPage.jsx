@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertCircle, ArrowRight, MapPin } from 'lucide-react';
+import { AlertCircle, ArrowRight, MapPin, RefreshCw, CheckCircle2, Home } from 'lucide-react';
+import axios from 'axios';
 
 import AuthLayout from '../../components/auth/AuthLayout';
 import FloatingInput from '../../components/auth/FloatingInput';
@@ -73,6 +74,8 @@ export default function SignupPage() {
   // Geolocation state for vendors
   const [locationStatus, setLocationStatus] = useState('idle'); // idle, loading, success, error
   const [coordinates, setCoordinates] = useState(null); // { lat, lng }
+  const [address, setAddress] = useState('');
+
   const {
     register,
     handleSubmit,
@@ -86,6 +89,16 @@ export default function SignupPage() {
   const passwordValue = watch('password');
   const selectedRole = watch('role');
 
+  const reverseGeocode = async (lat, lng) => {
+    try {
+      const { data } = await axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+      setAddress(data.display_name || 'Address found at your current coordinates.');
+    } catch (error) {
+      console.error('Geocoding error:', error);
+      setAddress('Coordinates verified. Exact address lookup unavailable.');
+    }
+  };
+
   const handleGetLocation = () => {
     if (!navigator.geolocation) {
       setLocationStatus('error');
@@ -93,12 +106,12 @@ export default function SignupPage() {
     }
     setLocationStatus('loading');
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setCoordinates({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        setCoordinates({ lat, lng });
         setLocationStatus('success');
+        await reverseGeocode(lat, lng);
       },
       (error) => {
         console.error('Geolocation error:', error);
@@ -226,37 +239,80 @@ export default function SignupPage() {
                 {selectedRole === 'vendor' ? 'Vendor Headquarters Location' : 'Organizer Hub Location'}
               </label>
             </div>
-            <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginBottom: 12, lineHeight: 1.4 }}>
-              {selectedRole === 'vendor'
-                ? 'To help event organizers find your services, we require vendors to share their current location. Local organizers within a 5km radius will see your listing.'
-                : 'To help us connect you with the best local vendors, we require organizers to share their primary event hub location.'}
-            </p>
-            <button
-              type="button"
-              onClick={handleGetLocation}
-              disabled={locationStatus === 'success' || locationStatus === 'loading'}
-              style={{
-                width: '100%',
-                padding: '10px 16px',
-                background: locationStatus === 'success' ? 'rgba(34, 197, 94, 0.1)' : 'transparent',
-                border: `1px solid ${locationStatus === 'success' ? '#22c55e' : 'var(--glass-border)'}`,
-                color: locationStatus === 'success' ? '#22c55e' : 'var(--color-text-main)',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-                cursor: (locationStatus === 'success' || locationStatus === 'loading') ? 'not-allowed' : 'pointer',
-                fontWeight: 600,
-                fontSize: '0.9rem',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              {locationStatus === 'idle' && 'Share Built-in GPS Location'}
-              {locationStatus === 'loading' && 'Acquiring GPS Signal...'}
-              {locationStatus === 'success' && '✓ Location Verified'}
-              {locationStatus === 'error' && '✗ Error Grabbing GPS - Try Again'}
-            </button>
+            
+            {locationStatus !== 'success' && (
+              <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginBottom: 12, lineHeight: 1.4 }}>
+                {selectedRole === 'vendor'
+                  ? 'To help event organizers find your services, we require vendors to share their current location. Local organizers within a 5km radius will see your listing.'
+                  : 'To help us connect you with the best local vendors, we require organizers to share their primary event hub location.'}
+              </p>
+            )}
+
+            {locationStatus !== 'success' ? (
+              <button
+                type="button"
+                onClick={handleGetLocation}
+                disabled={locationStatus === 'loading'}
+                className={locationStatus === 'loading' ? 'pulse-primary' : ''}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  background: 'transparent',
+                  border: '1.5px solid var(--glass-border)',
+                  color: 'var(--color-text-main)',
+                  borderRadius: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  cursor: locationStatus === 'loading' ? 'not-allowed' : 'pointer',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                }}
+              >
+                {locationStatus === 'loading' ? (
+                  <RefreshCw size={18} className="spin" />
+                ) : (
+                  <MapPin size={18} />
+                )}
+                {locationStatus === 'loading' ? 'Acquiring GPS Signal...' : 'Share Built-in GPS Location'}
+              </button>
+            ) : (
+              <div className="address-card">
+                <div className="address-icon-box">
+                  <Home size={20} />
+                </div>
+                <div className="address-content">
+                  <div className="address-header">
+                    <h5>Current Location</h5>
+                    <span className="address-tag">Verified</span>
+                  </div>
+                  <p className="address-text">
+                    {address || 'Fetching detailed address...'}
+                  </p>
+                  <button 
+                    type="button" 
+                    className="address-relocate"
+                    onClick={() => {
+                      setLocationStatus('idle');
+                      setCoordinates(null);
+                      setAddress('');
+                    }}
+                  >
+                    <RefreshCw size={12} />
+                    Change Location
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {locationStatus === 'error' && (
+               <div className="field-error" style={{ marginTop: 10 }}>
+                 <AlertCircle size={14} />
+                 <span>Location access is required for {selectedRole}s.</span>
+               </div>
+            )}
           </div>
         )}
 

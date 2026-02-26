@@ -8,6 +8,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
+const bookingRoutes = require("./routes/bookingRoutes");
 
 // ============================================================
 // Initialize Express & HTTP Server
@@ -40,6 +41,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 // ============================================================
 // Socket.io Logic

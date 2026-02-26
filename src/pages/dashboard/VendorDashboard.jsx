@@ -7,7 +7,8 @@ import {
   ToggleRight, 
   CheckCircle, 
   AlertCircle,
-  MessageSquare
+  MessageSquare,
+  Calendar
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
@@ -18,6 +19,23 @@ export default function VendorDashboard() {
   const { user, setUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState({ type: '', text: '' });
+  const [availability, setAvailability] = useState(user?.availability || []);
+  const [bookings, setBookings] = useState([]);
+  
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`${API_URL}/bookings/my`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setBookings(res.data.data);
+      } catch (err) {
+        console.error("Failed to fetch bookings", err);
+      }
+    };
+    fetchBookings();
+  }, []);
   
   const [formData, setFormData] = useState({
     businessName: user?.businessName || '',
@@ -26,6 +44,26 @@ export default function VendorDashboard() {
     isLocationSharing: user?.isLocationSharing || false,
     status: user?.status || 'active'
   });
+
+  // Simple calendar generator for next 30 days
+  const upcomingDates = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    return d.toISOString().split('T')[0];
+  });
+
+  const toggleAvailability = async (date) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.patch(`${API_URL}/users/availability`, { date }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAvailability(res.data.availability);
+      setUser({ ...user, availability: res.data.availability });
+    } catch (err) {
+      console.error("Failed to toggle availability", err);
+    }
+  };
 
   const handleUpdate = async (e) => {
     if (e) e.preventDefault();
@@ -133,6 +171,37 @@ export default function VendorDashboard() {
               </button>
             </form>
           </section>
+
+          <section className="glass-card p-6">
+            <h3 className="font-bold text-xl mb-6 flex items-center gap-2">
+              <Calendar size={24} className="text-primary" />
+              Availability Management
+            </h3>
+            <p className="text-sm text-muted mb-4">Click on dates to toggle your availability for organizers.</p>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
+              {upcomingDates.map((date) => {
+                const d = new Date(date);
+                const isAvailable = availability.includes(date);
+                return (
+                  <button
+                    key={date}
+                    onClick={() => toggleAvailability(date)}
+                    className={`p-3 rounded-xl border transition-all flex flex-col items-center gap-1 ${
+                      isAvailable 
+                        ? 'bg-primary/10 border-primary text-primary' 
+                        : 'bg-white/50 border-white/20 hover:border-primary/50'
+                    }`}
+                  >
+                    <span className="text-[10px] uppercase font-bold opacity-60">
+                      {d.toLocaleString('default', { month: 'short' })}
+                    </span>
+                    <span className="text-lg font-bold">{d.getDate()}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
         </div>
 
         <div className="md-col-span-1">
@@ -163,17 +232,24 @@ export default function VendorDashboard() {
           <section className="glass-card p-6">
             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
               <MessageSquare size={20} className="text-primary" />
-              Quick Stats
+              Recent Booking Requests
             </h3>
             <div className="grid gap-3">
-              <div className="flex justify-between items-center p-3 bg-white/20 rounded-lg">
-                <span className="text-sm">Total Messages</span>
-                <span className="font-bold">0</span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-white/20 rounded-lg">
-                <span className="text-sm">Profile Views</span>
-                <span className="font-bold">124</span>
-              </div>
+              {bookings.length > 0 ? bookings.map(b => (
+                <div key={b._id} className="p-3 bg-white/20 rounded-lg border border-white/10 flex justify-between items-center">
+                  <div>
+                    <div className="font-bold text-sm">{b.organizer?.name}</div>
+                    <div className="text-xs text-muted">{b.date}</div>
+                  </div>
+                  <span className={`text-[10px] font-bold px-2 py-1 rounded ${
+                    b.status === 'confirmed' ? 'bg-green/20 text-green' : 'bg-primary/20 text-primary'
+                  }`}>
+                    {b.status.toUpperCase()}
+                  </span>
+                </div>
+              )) : (
+                <p className="text-xs text-muted text-center py-4">No booking requests yet.</p>
+              )}
             </div>
           </section>
         </div>

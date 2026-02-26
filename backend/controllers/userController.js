@@ -34,7 +34,7 @@ const getNearbyUsers = async (req, res) => {
       query.role = role;
     }
 
-    const users = await User.find(query).select("-password");
+    const users = await User.find(query).select("-password +availability");
 
     res.status(200).json({
       status: "success",
@@ -93,7 +93,18 @@ const updateVendorProfile = async (req, res) => {
 // ============================================================
 const getVendors = async (req, res) => {
   try {
-    const vendors = await User.find({ role: "vendor", status: "active" }).select("-password");
+    const { search } = req.query;
+    let query = { role: "vendor", status: "active" };
+
+    if (search) {
+      query.$or = [
+        { businessName: { $regex: search, $options: "i" } },
+        { name: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } }
+      ];
+    }
+
+    const vendors = await User.find(query).select("-password +availability");
     res.status(200).json({ status: "success", results: vendors.length, data: vendors });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -133,4 +144,45 @@ const updateLocation = async (req, res) => {
   }
 };
 
-module.exports = { getNearbyUsers, updateVendorProfile, getVendors, updateLocation };
+// ============================================================
+// GET /api/users/:id
+// ============================================================
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password +availability");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json({ status: "success", data: user });
+  } catch (error) {
+    res.status(400).json({ message: "Invalid ID or server error" });
+  }
+};
+
+// ============================================================
+// PATCH /api/users/availability
+// ============================================================
+const updateAvailability = async (req, res) => {
+  try {
+    const { date } = req.body; // Expecting "YYYY-MM-DD"
+    if (!date) return res.status(400).json({ message: "Date is required" });
+
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Initialize availability if it doesn't exist (safety)
+    if (!user.availability) user.availability = [];
+
+    const index = user.availability.indexOf(date);
+    if (index > -1) {
+      user.availability.splice(index, 1); // Remove if exists
+    } else {
+      user.availability.push(date); // Add if doesn't
+    }
+
+    await user.save();
+    res.status(200).json({ status: "success", availability: user.availability });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { getNearbyUsers, updateVendorProfile, getVendors, updateLocation, updateAvailability, getUserById };

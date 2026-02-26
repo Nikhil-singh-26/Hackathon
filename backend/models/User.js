@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema(
         required: true,
       },
     },
+    availability: {
+      type: [String], // Array of date strings "YYYY-MM-DD"
+      default: [],
+    },
   },
   {
     timestamps: true,

@@ -4,7 +4,6 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Features from './components/Features';
 import MarketplacePreview from './components/MarketplacePreview';
-import History from './components/History';
 import Achievements from './components/Achievements';
 import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
@@ -40,7 +39,6 @@ function LandingPage() {
         <Hero />
         <Features />
         <MarketplacePreview />
-        <History />
         <Achievements />
         <Testimonials />
         <Contact />

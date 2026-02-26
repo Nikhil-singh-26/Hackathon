@@ -1,91 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Star, MapPin, Loader2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { MOCK_VENDORS } from '../constants/vendors';
 import './MarketplacePreview.css';
 
-export const vendors = [
-    {
-        id: 1,
-        name: "Lumina Photography",
-        category: "Photography",
-        rating: 4.9,
-        reviews: 128,
-        price: "₹15,000",
-        image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 2,
-        name: "The Grand Emerald Venue",
-        category: "Venue",
-        rating: 4.8,
-        reviews: 245,
-        price: "₹1,50,000",
-        image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 3,
-        name: "Melody Masters",
-        category: "Music",
-        rating: 5.0,
-        reviews: 89,
-        price: "₹25,000",
-        image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 4,
-        name: "Gourmet Delights",
-        category: "Catering",
-        rating: 4.7,
-        reviews: 156,
-        price: "₹800/plate",
-        image: "https://images.unsplash.com/photo-1555243896-c709bfa0b564?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 5,
-        name: "Royal Event Planners",
-        category: "Planner",
-        rating: 4.9,
-        reviews: 312,
-        price: "₹50,000",
-        image: "https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 6,
-        name: "Floral Fantasies",
-        category: "Decoration",
-        rating: 4.8,
-        reviews: 210,
-        price: "₹35,000",
-        image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 7,
-        name: "Elite Makeovers",
-        category: "Makeup",
-        rating: 4.9,
-        reviews: 175,
-        price: "₹20,000",
-        image: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 8,
-        name: "Rhythm Rockers",
-        category: "DJ",
-        rating: 4.7,
-        reviews: 95,
-        price: "₹18,000",
-        image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=800"
-    }
-];
+const API_URL = 'http://localhost:5000/api';
 
 export default function MarketplacePreview() {
     const [showAll, setShowAll] = useState(false);
     const navigate = useNavigate();
 
-    const [vendorsList, setVendorsList] = useState(vendors);
+    const [vendorsList, setVendorsList] = useState(MOCK_VENDORS);
+    const [loading, setLoading] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
     const [searchStatus, setSearchStatus] = useState('idle'); // idle, loading, success, error, no-results
+
+    useEffect(() => {
+        const fetchInitialVendors = async () => {
+            setLoading(true);
+            try {
+                const res = await axios.get(`${API_URL}/users/vendors`);
+                if (res.data.data && res.data.data.length > 0) {
+                    setVendorsList(res.data.data);
+                } else {
+                    setVendorsList(MOCK_VENDORS); // Fallback to mock if empty
+                }
+                setLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch vendors", err);
+                setVendorsList(MOCK_VENDORS); // Fallback on error
+                setLoading(false);
+            }
+        };
+        fetchInitialVendors();
+    }, []);
 
     const handleFindNearby = () => {
         if (!navigator.geolocation) {
@@ -100,35 +49,24 @@ export default function MarketplacePreview() {
             async (position) => {
                 try {
                     const { latitude, longitude } = position.coords;
-                    // Our backend route uses radius in KM. So radius=5 means 5km.
-                    const API_URL = import.meta.env.VITE_API_URL || '/api';
                     const response = await axios.get(`${API_URL}/users/nearby`, {
-                        params: { lat: latitude, lng: longitude, radius: 5, role: 'vendor' }
+                        params: { lat: latitude, lng: longitude, radius: 25, role: 'vendor' }
                     });
 
-                    const nearbyVendors = response.data.users;
+                    const nearbyVendors = response.data.data;
 
                     if (nearbyVendors && nearbyVendors.length > 0) {
-                        // Map database schema to frontend card schema
-                        const mappedVendors = nearbyVendors.map(v => ({
-                            id: v._id,
-                            name: v.name,
-                            category: "Local Vendor", // Could be dynamic if schema supports it
-                            rating: "5.0", // Mock rating since DB doesn't have it yet
-                            reviews: 0,
-                            price: "Price on request",
-                            image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800"
-                        }));
-                        setVendorsList(mappedVendors);
+                        setVendorsList(nearbyVendors);
                         setSearchStatus('success');
-                        setShowAll(true); // show all nearby by default
+                        setShowAll(true);
                     } else {
-                        setVendorsList([]);
+                        setVendorsList(MOCK_VENDORS); // Fallback to mock
                         setSearchStatus('no-results');
                     }
                 } catch (error) {
                     console.error("Error fetching nearby vendors:", error);
                     setSearchStatus('error');
+                    setVendorsList(MOCK_VENDORS); // Fallback
                 } finally {
                     setIsSearching(false);
                 }
@@ -137,6 +75,7 @@ export default function MarketplacePreview() {
                 console.error("Geolocation error:", error);
                 setSearchStatus('error');
                 setIsSearching(false);
+                setVendorsList(MOCK_VENDORS); // Fallback
             },
             { enableHighAccuracy: true }
         );
@@ -163,52 +102,66 @@ export default function MarketplacePreview() {
                         }}
                     >
                         {isSearching ? <Loader2 size={18} className="spin" /> : <MapPin size={18} />}
-                        {isSearching ? 'Scanning 5km Radius...' : searchStatus === 'success' ? 'Viewing Local Vendors (5km)' : 'Find Vendors near me (5km)'}
+                        {isSearching ? 'Scanning 25km Radius...' : searchStatus === 'success' ? 'Viewing Local Vendors' : 'Find Vendors near me'}
                     </button>
 
-                    {searchStatus === 'error' && <p style={{ color: 'var(--color-error)', fontSize: '0.9rem' }}>Unable to access location or server error.</p>}
-                    {searchStatus === 'no-results' && <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>No vendors found within exactly 5km of your current location. Showing mock data instead.</p>}
+                    {searchStatus === 'error' && <p style={{ color: 'var(--color-error)', fontSize: '0.9rem' }}>Unable to access location or server error. Showing featured vendors.</p>}
+                    {searchStatus === 'no-results' && <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>No vendors found nearby. Showing featured vendors instead.</p>}
                 </div>
 
-                <div className="vendor-grid">
-                    {displayedVendors.map(vendor => (
-                        <div
-                            key={vendor.id}
-                            className="vendor-card glass-card"
-                            onClick={() => navigate(`/vendor/${vendor.id}`)}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            <div className="vendor-image-wrap">
-                                <img src={vendor.image} alt={vendor.name} className="vendor-image" />
-                                <div className="vendor-category">{vendor.category}</div>
-                            </div>
-                            <div className="vendor-info">
-                                <div className="flex justify-between items-center mb-2">
-                                    <h3 className="vendor-name">{vendor.name}</h3>
-                                    <div className="vendor-rating flex items-center gap-1">
-                                        <Star size={16} className="star-icon" fill="currentColor" />
-                                        <span>{vendor.rating}</span>
+                {loading ? (
+                    <div className="flex justify-center py-20">
+                        <Loader2 className="spin text-primary" size={40} />
+                    </div>
+                ) : vendorsList.length === 0 ? (
+                    <div className="text-center py-20 glass-card">
+                        <p className="text-muted">No vendors found. Be the first to join!</p>
+                    </div>
+                ) : (
+                    <div className="vendor-grid">
+                        {displayedVendors.map(vendor => (
+                            <div
+                                key={vendor._id}
+                                className="vendor-card glass-card"
+                                onClick={() => navigate(`/vendor/${vendor._id}`)}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <div className="vendor-image-wrap">
+                                    <img 
+                                        src={vendor.images?.[0] || "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800"} 
+                                        alt={vendor.businessName || vendor.name} 
+                                        className="vendor-image" 
+                                    />
+                                    <div className="vendor-category">{vendor.category || "Service Provider"}</div>
+                                </div>
+                                <div className="vendor-info">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <h3 className="vendor-name">{vendor.businessName || vendor.name}</h3>
+                                        <div className="vendor-rating flex items-center gap-1">
+                                            < Star size={16} className="star-icon" fill="currentColor" />
+                                            <span>4.8</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-between items-center mt-4">
+                                        <div className="vendor-price">
+                                            <span className="price-label">Starts at</span>
+                                            <p>{vendor.startingPrice || "₹15,000"}</p>
+                                        </div>
+                                        <Link
+                                            to={`/vendor/${vendor._id}`}
+                                            className="glass-btn view-btn"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            View Profile
+                                        </Link>
                                     </div>
                                 </div>
-                                <div className="flex justify-between items-center mt-4">
-                                    <div className="vendor-price">
-                                        <span className="price-label">Starts at</span>
-                                        <p>{vendor.price}</p>
-                                    </div>
-                                    <Link
-                                        to={`/vendor/${vendor.id}`}
-                                        className="glass-btn view-btn"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        View Profile
-                                    </Link>
-                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
 
-                {searchStatus !== 'success' && (
+                {vendorsList.length > 4 && (
                     <div className="text-center mt-12">
                         <button
                             className="solid-btn"
