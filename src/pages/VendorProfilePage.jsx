@@ -1,57 +1,169 @@
-import { useState } from 'react';
-import { 
-    Star, MapPin, Calendar as CalendarIcon, Users, 
-    Car, Home, Sun, Info, CheckCircle2, 
+import { useState, useEffect } from 'react';
+import {
+    Star, MapPin, Calendar as CalendarIcon, Users,
+    Car, Home, Sun, Info, CheckCircle2,
     MessageCircle, ChevronDown, ChevronUp
 } from 'lucide-react';
 import './VendorProfilePage.css';
+import { useParams } from 'react-router-dom';
 
-const MOCK_VENDOR = {
-    name: "The Grand Emerald Venue",
-    category: "Venue",
-    rating: 4.8,
-    reviewsCount: 245,
-    startingPrice: "₹1,50,000",
-    location: "123 Event Street, City Center, Mumbai",
-    capacity: "500 - 1500 Guests",
-    parking: "Valet & 200 Slots",
-    rooms: 15,
-    options: "Indoor & Outdoor",
-    catering: "In-house & Outside",
-    decoration: "In-house Only",
-    images: [
-        "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&q=80&w=1200",
-        "https://images.unsplash.com/photo-1519167758481-83f5affe0fb5?auto=format&fit=crop&q=80&w=1200",
-        "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1200",
-        "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&q=80&w=1200"
-    ],
-    description: "The Grand Emerald Venue offers a perfect blend of luxury and natural beauty. With state-of-the-art facilities and experienced staff, we ensure your special day transcends expectations. Our heritage-inspired architecture combined with modern amenities makes it the perfect backdrop for your celebrations.",
-    experience: "15+ Years in Event Management",
-    highlights: ["Award-winning hospitality", "Premium location", "24/7 Power Backup", "Dedicated Event Manager"],
-    packages: [
-        { name: "Silver Package", price: "₹1,50,000", features: ["Venue access for 8 hours", "Basic lighting", "Standard seating setup"] },
-        { name: "Platinum Package", price: "₹3,00,000", features: ["Venue access 24 hrs", "Premium decor setup", "Bridal suite included", "Valet services"] }
-    ],
-    platePricing: { veg: "₹1,200/plate", nonVeg: "₹1,500/plate" },
-    reviewsList: [
-        { id: 1, name: "Rahul S.", rating: 5, text: "Absolutely stunning venue. Our wedding was magical! The staff was extremely helpful.", date: "15 Feb 2026" },
-        { id: 2, name: "Priya M.", rating: 4, text: "Great food and ambience. Parking was slightly tight but managed well by valet.", date: "10 Feb 2026" },
-        { id: 3, name: "Amit K.", rating: 5, text: "Highly recommend for large gatherings. The outdoor lawn is beautiful.", date: "28 Jan 2026" }
-    ],
-    faqs: [
-        { question: "What is the cancellation policy?", answer: "50% refund if cancelled 30 days prior. No refund if cancelled within 30 days of the event." },
-        { question: "Can we bring our own decorator?", answer: "No, we have an exclusive panel of decorators to ensure the highest quality of service." },
-        { question: "Is alcohol allowed?", answer: "Yes, alcohol is allowed with a valid liquor license which can be procured." }
-    ]
+const VENDOR_DATABASE = {
+    1: {
+        name: "Lumina Photography",
+        category: "Photography",
+        rating: 4.9,
+        reviewsCount: 128,
+        startingPrice: "₹15,000",
+        location: "Andheri West, Mumbai",
+        capacity: "N/A",
+        parking: "N/A",
+        rooms: 0,
+        options: "Pre-wedding & Wedding",
+        catering: "N/A",
+        decoration: "N/A",
+        images: [
+            "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&q=80&w=1200"
+        ],
+        description: "Lumina Photography specializes in capturing the candid, emotional moments of your special day. With a team of award-winning photographers, we ensure your memories are preserved beautifully.",
+        experience: "8+ Years in Wedding Photography",
+        highlights: ["Candid Specialists", "Drone Photography", "Same-day edit options", "Premium Albums"],
+        packages: [
+            { name: "Silver Package", price: "₹15,000", features: ["1 Photographer", "5 hrs coverage", "Digital Album"] },
+            { name: "Platinum Package", price: "₹45,000", features: ["2 Photographers, 1 Videographer", "Full day coverage", "Drone shots", "Premium Print Album"] }
+        ],
+        platePricing: { veg: "N/A", nonVeg: "N/A" },
+        reviewsList: [
+            { id: 1, name: "Anita R.", rating: 5, text: "They made us look like movie stars! Stunning photos.", date: "20 Feb 2026" }
+        ],
+        faqs: [
+            { question: "Do you travel for outstation weddings?", answer: "Yes, travel and accommodation charges are extra." }
+        ]
+    },
+    2: {
+        name: "The Grand Emerald Venue",
+        category: "Venue",
+        rating: 4.8,
+        reviewsCount: 245,
+        startingPrice: "₹1,50,000",
+        location: "123 Event Street, City Center, Mumbai",
+        capacity: "500 - 1500 Guests",
+        parking: "Valet & 200 Slots",
+        rooms: 15,
+        options: "Indoor & Outdoor",
+        catering: "In-house & Outside",
+        decoration: "In-house Only",
+        images: [
+            "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1519167758481-83f5affe0fb5?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&q=80&w=1200"
+        ],
+        description: "The Grand Emerald Venue offers a perfect blend of luxury and natural beauty. With state-of-the-art facilities and experienced staff, we ensure your special day transcends expectations.",
+        experience: "15+ Years in Event Management",
+        highlights: ["Award-winning hospitality", "Premium location", "24/7 Power Backup", "Dedicated Event Manager"],
+        packages: [
+            { name: "Silver Package", price: "₹1,50,000", features: ["Venue access for 8 hours", "Basic lighting", "Standard seating setup"] },
+            { name: "Platinum Package", price: "₹3,00,000", features: ["Venue access 24 hrs", "Premium decor setup", "Bridal suite included", "Valet services"] }
+        ],
+        platePricing: { veg: "₹1,200/plate", nonVeg: "₹1,500/plate" },
+        reviewsList: [
+            { id: 1, name: "Rahul S.", rating: 5, text: "Absolutely stunning venue. Our wedding was magical!", date: "15 Feb 2026" },
+            { id: 3, name: "Amit K.", rating: 5, text: "Highly recommend for large gatherings.", date: "28 Jan 2026" }
+        ],
+        faqs: [
+            { question: "What is the cancellation policy?", answer: "50% refund if cancelled 30 days prior." }
+        ]
+    },
+    3: {
+        name: "Melody Masters",
+        category: "Music",
+        rating: 5.0,
+        reviewsCount: 89,
+        startingPrice: "₹25,000",
+        location: "Bandra, Mumbai",
+        capacity: "Any",
+        parking: "N/A",
+        rooms: 0,
+        options: "Live Band / DJ",
+        catering: "N/A",
+        decoration: "N/A",
+        images: [
+            "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1470229722913-7c090be5f581?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?auto=format&fit=crop&q=80&w=1200"
+        ],
+        description: "Melody Masters provides the ultimate musical experience for your weddings and parties. Ranging from classical instrumental to high-energy DJ performances.",
+        experience: "10+ Years of Live Performances",
+        highlights: ["Custom Playlists", "Professional Sound System", "Interactive MCs", "Acoustic Sets available"],
+        packages: [
+            { name: "Acoustic Setup", price: "₹25,000", features: ["2 Piece Band", "3 Hours Performance", "Basic Sound"] },
+            { name: "Full Band + DJ", price: "₹65,000", features: ["5 Piece Band", "DJ set for afterparty", "Full line-array sound system", "Lighting kit"] }
+        ],
+        platePricing: { veg: "N/A", nonVeg: "N/A" },
+        reviewsList: [
+            { id: 1, name: "Sanjay", rating: 5, text: "They kept the dance floor packed all night!", date: "12 Feb 2026" }
+        ],
+        faqs: [
+            { question: "Do you take song requests?", answer: "Yes, we encourage you to share a playlist prior to the event." }
+        ]
+    },
+    4: {
+        name: "Gourmet Delights",
+        category: "Catering",
+        rating: 4.7,
+        reviewsCount: 156,
+        startingPrice: "₹800/plate",
+        location: "Powai, Mumbai",
+        capacity: "Up to 5000 Guests",
+        parking: "N/A",
+        rooms: 0,
+        options: "Buffet & Table Service",
+        catering: "Multi-cuisine",
+        decoration: "Food Presentation included",
+        images: [
+            "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1555243896-c709bfa0b564?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?auto=format&fit=crop&q=80&w=1200",
+            "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&q=80&w=1200"
+        ],
+        description: "Gourmet Delights turns your event into an unforgettable culinary journey. From authentic local delicacies to exotic international cuisines, our master chefs curate the perfect menu.",
+        experience: "20+ Years in Catering",
+        highlights: ["Custom Menus", "Live Counters", "Trained Servicing Staff", "Premium Cutlery"],
+        packages: [
+            { name: "Standard Buffet", price: "₹800/plate", features: ["2 Starters", "4 Main Course", "2 Desserts"] },
+            { name: "Royal Feast", price: "₹1,800/plate", features: ["5 Starters", "6 Main Course", "Live Pasta & Chaat Counter", "4 Premium Desserts"] }
+        ],
+        platePricing: { veg: "₹800/plate", nonVeg: "₹1,100/plate" },
+        reviewsList: [
+            { id: 1, name: "Neha W.", rating: 5, text: "The live pasta counter was a huge hit!", date: "05 Feb 2026" }
+        ],
+        faqs: [
+            { question: "Do you provide Jain food?", answer: "Yes, we have a separate specialized kitchen and chefs for Jain cuisine." }
+        ]
+    }
 };
 
 export default function VendorProfilePage() {
+    const { id } = useParams();
+    const vendorId = id ? parseInt(id) : 2; // Default to Grand Emerald Venue if no ID
+
+    // Fallback to vendor id 2 if requested vendor is not in our mock db
+    const MOCK_VENDOR = VENDOR_DATABASE[vendorId] || VENDOR_DATABASE[2];
+
     const [activeImg, setActiveImg] = useState(0);
     const [expandedFaq, setExpandedFaq] = useState(null);
     const [selectedDate, setSelectedDate] = useState("");
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [id]);
+
     // Simple calendar mock
-    const upcomingDates = Array.from({length: 14}, (_, i) => {
+    const upcomingDates = Array.from({ length: 14 }, (_, i) => {
         const d = new Date();
         d.setDate(d.getDate() + i + 1);
         return {
@@ -73,7 +185,7 @@ export default function VendorProfilePage() {
                 <div className="vp-hero-content">
                     <span className="vp-category">{MOCK_VENDOR.category}</span>
                     <h1 className="vp-title">{MOCK_VENDOR.name}</h1>
-                    
+
                     <div className="vp-meta flex items-center flex-wrap gap-4">
                         <div className="flex items-center gap-1 vp-rating-badge">
                             <Star size={18} fill="currentColor" className="text-accent" />
@@ -108,8 +220,8 @@ export default function VendorProfilePage() {
                 </div>
                 <div className="vp-thumbnails grid grid-cols-4 gap-4 mt-4">
                     {MOCK_VENDOR.images.map((img, idx) => (
-                        <div 
-                            key={idx} 
+                        <div
+                            key={idx}
                             className={`vp-thumb glass-card ${activeImg === idx ? 'active' : ''}`}
                             onClick={() => setActiveImg(idx)}
                         >
@@ -120,7 +232,7 @@ export default function VendorProfilePage() {
             </section>
 
             <div className="vp-layout grid grid-cols-1 md-grid-cols-3 gap-8">
-                
+
                 <div className="vp-main-content md-col-span-2">
                     {/* 4. About Section */}
                     <section className="vp-section glass-card">
@@ -177,16 +289,16 @@ export default function VendorProfilePage() {
                             <div className="text-center">
                                 <div className="text-4xl font-bold">{MOCK_VENDOR.rating}</div>
                                 <div className="flex justify-center my-1">
-                                    {[1,2,3,4,5].map(s => <Star key={s} size={16} fill={s <= Math.round(MOCK_VENDOR.rating) ? "currentColor" : "none"} className="text-accent"/>)}
+                                    {[1, 2, 3, 4, 5].map(s => <Star key={s} size={16} fill={s <= Math.round(MOCK_VENDOR.rating) ? "currentColor" : "none"} className="text-accent" />)}
                                 </div>
                                 <div className="text-sm">{MOCK_VENDOR.reviewsCount} reviews</div>
                             </div>
                             <div className="vp-rating-bars flex-1">
-                                {[5,4,3,2,1].map(r => (
+                                {[5, 4, 3, 2, 1].map(r => (
                                     <div key={r} className="flex items-center gap-2 text-sm mb-1">
                                         <span>{r}</span> <Star size={12} fill="currentColor" className="text-accent" />
                                         <div className="vp-progress-bar flex-1 bg-surface rounded-full h-2">
-                                            <div className="bg-accent h-full rounded-full" style={{width: `${r===5?70:r===4?20:r===3?5:2}%`}}></div>
+                                            <div className="bg-accent h-full rounded-full" style={{ width: `${r === 5 ? 70 : r === 4 ? 20 : r === 3 ? 5 : 2}%` }}></div>
                                         </div>
                                     </div>
                                 ))}
@@ -201,7 +313,7 @@ export default function VendorProfilePage() {
                                         <div className="text-sm text-muted">{review.date}</div>
                                     </div>
                                     <div className="flex mb-2">
-                                        {[1,2,3,4,5].map(s => <Star key={s} size={14} fill={s <= review.rating ? "currentColor" : "none"} className="text-accent" />)}
+                                        {[1, 2, 3, 4, 5].map(s => <Star key={s} size={14} fill={s <= review.rating ? "currentColor" : "none"} className="text-accent" />)}
                                     </div>
                                     <p className="text-sm">{review.text}</p>
                                 </div>
@@ -267,13 +379,12 @@ export default function VendorProfilePage() {
                             </div>
                             <div className="grid grid-cols-7 gap-1">
                                 {/* Dummy offset */}
-                                <div/><div/>
+                                <div /><div />
                                 {upcomingDates.map((d, i) => (
-                                    <div 
-                                        key={i} 
-                                        className={`vp-cal-day py-2 text-center text-sm rounded cursor-pointer ${
-                                            d.available ? 'bg-surface hover-bg-accent' : 'bg-surface-dark opacity-50 cursor-not-allowed'
-                                        } border ${selectedDate === d.date ? 'border-accent shadow-sm' : 'border-transparent'}`}
+                                    <div
+                                        key={i}
+                                        className={`vp-cal-day py-2 text-center text-sm rounded cursor-pointer ${d.available ? 'bg-surface hover-bg-accent' : 'bg-surface-dark opacity-50 cursor-not-allowed'
+                                            } border ${selectedDate === d.date ? 'border-accent shadow-sm' : 'border-transparent'}`}
                                         onClick={() => d.available && setSelectedDate(d.date)}
                                         title={d.available ? 'Available' : 'Booked'}
                                     >
@@ -291,7 +402,7 @@ export default function VendorProfilePage() {
                     {/* 8. Location Section */}
                     <section className="vp-section glass-card mt-8">
                         <h3 className="font-bold text-xl mb-4">Location</h3>
-                        <p className="text-sm mb-4"><MapPin size={14} className="inline mr-1"/> {MOCK_VENDOR.location}</p>
+                        <p className="text-sm mb-4"><MapPin size={14} className="inline mr-1" /> {MOCK_VENDOR.location}</p>
                         <div className="vp-map-mock h-48 rounded-lg overflow-hidden relative">
                             <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=400" alt="Map Location" className="w-full h-full object-cover opacity-70" />
                             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20">

@@ -126,7 +126,17 @@ export const loginUser = async (credentials) => {
  * Register a new account
  */
 export const signupUser = async (userData) => {
-  const { data } = await api.post('/auth/signup', userData);
+  // Map form fields to backend expectations
+  const backendData = {
+    name: userData.fullName || userData.name || 'New User',
+    email: userData.email,
+    password: userData.password,
+    role: "user",
+    longitude: 77.2090,
+    latitude: 28.6139
+  };
+
+  const { data } = await api.post('/auth/signup', backendData);
   setAccessToken(data.token);
   return data;
 };

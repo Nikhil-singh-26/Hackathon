@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { Star } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './MarketplacePreview.css';
 
-const vendors = [
+export const vendors = [
     {
         id: 1,
         name: "Lumina Photography",
@@ -37,11 +38,52 @@ const vendors = [
         rating: 4.7,
         reviews: 156,
         price: "₹800/plate",
-        image: "https://images.unsplash.com/photo-1555244162-803834f87a4d?auto=format&fit=crop&q=80&w=800"
+        image: "https://images.unsplash.com/photo-1555243896-c709bfa0b564?auto=format&fit=crop&q=80&w=800"
+    },
+    {
+        id: 5,
+        name: "Royal Event Planners",
+        category: "Planner",
+        rating: 4.9,
+        reviews: 312,
+        price: "₹50,000",
+        image: "https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&q=80&w=800"
+    },
+    {
+        id: 6,
+        name: "Floral Fantasies",
+        category: "Decoration",
+        rating: 4.8,
+        reviews: 210,
+        price: "₹35,000",
+        image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&q=80&w=800"
+    },
+    {
+        id: 7,
+        name: "Elite Makeovers",
+        category: "Makeup",
+        rating: 4.9,
+        reviews: 175,
+        price: "₹20,000",
+        image: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&q=80&w=800"
+    },
+    {
+        id: 8,
+        name: "Rhythm Rockers",
+        category: "DJ",
+        rating: 4.7,
+        reviews: 95,
+        price: "₹18,000",
+        image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=800"
     }
 ];
 
 export default function MarketplacePreview() {
+    const [showAll, setShowAll] = useState(false);
+    const navigate = useNavigate();
+
+    const displayedVendors = showAll ? vendors : vendors.slice(0, 4);
+
     return (
         <section id="marketplace" className="marketplace-section">
             <div className="container">
@@ -51,8 +93,13 @@ export default function MarketplacePreview() {
                 </div>
 
                 <div className="vendor-grid">
-                    {vendors.map(vendor => (
-                        <div key={vendor.id} className="vendor-card glass-card">
+                    {displayedVendors.map(vendor => (
+                        <div
+                            key={vendor.id}
+                            className="vendor-card glass-card"
+                            onClick={() => navigate(`/vendor/${vendor.id}`)}
+                            style={{ cursor: 'pointer' }}
+                        >
                             <div className="vendor-image-wrap">
                                 <img src={vendor.image} alt={vendor.name} className="vendor-image" />
                                 <div className="vendor-category">{vendor.category}</div>
@@ -70,7 +117,11 @@ export default function MarketplacePreview() {
                                         <span className="price-label">Starts at</span>
                                         <p>{vendor.price}</p>
                                     </div>
-                                    <Link to={`/vendor/${vendor.id}`} className="glass-btn view-btn">
+                                    <Link
+                                        to={`/vendor/${vendor.id}`}
+                                        className="glass-btn view-btn"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
                                         View Profile
                                     </Link>
                                 </div>
@@ -80,7 +131,12 @@ export default function MarketplacePreview() {
                 </div>
 
                 <div className="text-center mt-12">
-                    <button className="solid-btn">View All Vendors</button>
+                    <button
+                        className="solid-btn"
+                        onClick={() => setShowAll(!showAll)}
+                    >
+                        {showAll ? 'Show Less' : 'View All Vendors'}
+                    </button>
                 </div>
             </div>
         </section>

@@ -18,6 +18,12 @@ export default function DashboardLayout() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([
+    { id: 1, text: 'New booking request from Sarah for Grand Emerald Venue', time: '2 mins ago', read: false },
+    { id: 2, text: 'Your event "Tech Meetup" was successfully published', time: '1 hour ago', read: false },
+    { id: 3, text: 'System update scheduled for tonight at 2 AM', time: '5 hours ago', read: true }
+  ]);
 
   useEffect(() => {
     document.body.setAttribute('data-theme', theme);
@@ -32,6 +38,17 @@ export default function DashboardLayout() {
     await logout();
     navigate('/auth/login');
   };
+
+
+  const markAllRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+  };
+
+  const toggleNotificationDropdown = () => {
+    setShowNotifications(!showNotifications);
+  };
+
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
     <div className="os-layout glass-dashboard">
@@ -77,10 +94,41 @@ export default function DashboardLayout() {
       {/* Main content */}
       <div className="os-main">
         <div className="os-topbar glass-topbar">
-          <button className="os-icon-btn" title="Notifications">
-            <Bell size={20} />
-            <span className="os-badge">3</span>
-          </button>
+
+          <div className="os-notification-wrapper">
+            <button
+              className="os-icon-btn"
+              title="Notifications"
+              onClick={toggleNotificationDropdown}
+            >
+              <Bell size={20} />
+              {unreadCount > 0 && <span className="os-badge">{unreadCount}</span>}
+            </button>
+
+            {showNotifications && (
+              <div className="os-notifications-dropdown glass-card">
+                <div className="os-notifications-header">
+                  <h4>Notifications</h4>
+                  {unreadCount > 0 && (
+                    <button onClick={markAllRead}>Mark all read</button>
+                  )}
+                </div>
+                <div className="os-notifications-list">
+                  {notifications.length === 0 ? (
+                    <p className="no-notifications">No new notifications</p>
+                  ) : (
+                    notifications.map(n => (
+                      <div key={n.id} className={`os-notification-item ${n.read ? '' : 'unread'}`}>
+                        <p>{n.text}</p>
+                        <span>{n.time}</span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
           <button className="os-icon-btn" onClick={toggleTheme} title="Toggle Theme">
             {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
           </button>
