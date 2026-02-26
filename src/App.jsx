@@ -20,6 +20,8 @@ import VendorProfilePage from './pages/VendorProfilePage';
 import DashboardLayout from './pages/dashboard/DashboardLayout';
 import OverviewPage from './pages/dashboard/OverviewPage';
 import SettingsPage from './pages/dashboard/SettingsPage';
+import EventsPage from './pages/dashboard/EventsPage';
+import AnalyticsPage from './pages/dashboard/AnalyticsPage';
 import VendorDashboard from './pages/dashboard/VendorDashboard';
 import OrganizerDashboard from './pages/dashboard/OrganizerDashboard';
 import ChatPage from './pages/ChatPage';
@@ -69,7 +71,7 @@ function App() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<DashboardHome />} />
+        <Route index element={<OverviewPage />} />
         <Route path="events" element={<EventsPage />} />
         <Route path="chat/:chatId" element={<ChatPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
