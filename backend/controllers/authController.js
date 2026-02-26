@@ -15,7 +15,7 @@ const generateToken = (userId) => {
 // ============================================================
 const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Validate required fields
     if (!name || !email || !password) {
@@ -34,8 +34,12 @@ const signup = async (req, res) => {
       return res.status(409).json({ message: "Email already registered" });
     }
 
+    // Ensure role validation (fallback to 'user')
+    const validRoles = ["user", "vendor", "organizer", "admin"];
+    const assignedRole = validRoles.includes(role) ? role : "user";
+
     // Create user (password hashed by pre-save hook)
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name, email, password, role: assignedRole });
 
     // Generate token
     const token = generateToken(user._id);
