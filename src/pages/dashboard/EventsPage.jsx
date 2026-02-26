@@ -38,21 +38,25 @@ export default function EventsPage() {
           <div className="os-settings-section">
             <h3>Create New Event</h3>
             <p>Fill in the details below to start planning your event.</p>
-            <form onSubmit={handleCreate}>
-              <div className="os-form-group">
-                <label className="os-form-label">Event Name</label>
-                <input name="name" type="text" className="os-form-input" placeholder="e.g. Annual Tech Conference" required />
-              </div>
-              <div className="os-form-group">
-                <label className="os-form-label">Date</label>
-                <input name="date" type="date" className="os-form-input" required />
-              </div>
-              <div className="os-form-group">
-                <label className="os-form-label">Estimated Budget (in INR)</label>
-                <input name="budget" type="number" className="os-form-input" placeholder="e.g. 50000" required />
-              </div>
-              <button type="submit" className="os-save-btn">Create Event</button>
-            </form>
+            <div className="os-form-container">
+              <form onSubmit={handleCreate}>
+                <div className="os-form-row">
+                  <div className="os-form-group">
+                    <label className="os-form-label">Event Name</label>
+                    <input name="name" type="text" className="os-form-input" placeholder="e.g. Annual Tech Conference" required />
+                  </div>
+                  <div className="os-form-group">
+                    <label className="os-form-label">Date</label>
+                    <input name="date" type="date" className="os-form-input" required />
+                  </div>
+                </div>
+                <div className="os-form-group">
+                  <label className="os-form-label">Estimated Budget (in INR)</label>
+                  <input name="budget" type="number" className="os-form-input" placeholder="e.g. 50000" required />
+                </div>
+                <button type="submit" className="os-save-btn">Create Event</button>
+              </form>
+            </div>
           </div>
         </div>
       ) : (
