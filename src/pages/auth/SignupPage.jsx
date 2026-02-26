@@ -14,6 +14,9 @@ import { useAuth } from '../../hooks/useAuth';
 
 const signupSchema = z
   .object({
+    role: z.enum(['user', 'organizer', 'vendor'], {
+      required_error: 'Please select an account type',
+    }),
     name: z
       .string()
       .min(1, 'Full name is required')
@@ -30,9 +33,6 @@ const signupSchema = z
         },
         { message: 'Please use a trusted email provider (e.g. Gmail, Outlook, Yahoo)' }
       ),
-    role: z.enum(['organizer', 'vendor'], {
-      errorMap: () => ({ message: 'Please select a role' }),
-    }),
     businessName: z.string().optional(),
     phone: z.string().optional(),
     password: z
@@ -77,10 +77,11 @@ export default function SignupPage() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(signupSchema),
-    defaultValues: { name: '', email: '', password: '', confirmPassword: '', terms: false },
+    defaultValues: { role: 'user', name: '', email: '', password: '', confirmPassword: '', terms: false },
   });
 
   const passwordValue = watch('password');
+  const selectedRole = watch('role');
 
   const onSubmit = async (data) => {
     setServerError('');
@@ -105,8 +106,6 @@ export default function SignupPage() {
     }
   };
 
-  const selectedRole = watch('role');
-
   return (
     <AuthLayout
       heading="Create account"
@@ -121,37 +120,42 @@ export default function SignupPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         {/* Role Selection */}
-        <div className="role-selection-grid grid grid-cols-2 gap-4 mb-6">
-          <button
-            type="button"
-            className={`role-card ${selectedRole === 'organizer' ? 'active' : ''}`}
-            onClick={() => register('role').onChange({ target: { value: 'organizer', name: 'role' } })}
-          >
-            <div className="role-icon">🎟️</div>
-            <div className="role-info">
-              <span className="role-title">Organizer</span>
-              <span className="role-desc">I want to book events</span>
-            </div>
-          </button>
-          <button
-            type="button"
-            className={`role-card ${selectedRole === 'vendor' ? 'active' : ''}`}
-            onClick={() => register('role').onChange({ target: { value: 'vendor', name: 'role' } })}
-          >
-            <div className="role-icon">🏪</div>
-            <div className="role-info">
-              <span className="role-title">Vendor</span>
-              <span className="role-desc">I want to provide services</span>
-            </div>
-          </button>
-        </div>
-        <input type="hidden" {...register('role')} />
-        {errors.role && (
-          <div className="field-error" style={{ marginTop: -16, marginBottom: 16 }}>
-            <AlertCircle size={14} />
-            <span>{errors.role.message}</span>
+        <div style={{ marginBottom: 24 }}>
+          <label className="auth-label" style={{ marginBottom: 12, display: 'block', color: 'var(--color-text-main)', fontSize: '0.9rem', fontWeight: 600 }}>I am a:</label>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <label style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px',
+              border: `1px solid ${selectedRole === 'organizer' ? 'var(--color-primary)' : 'var(--glass-border)'}`,
+              background: selectedRole === 'organizer' ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
+              borderRadius: '12px', cursor: 'pointer', transition: 'all 0.3s ease',
+              color: selectedRole === 'organizer' ? 'var(--color-primary)' : 'var(--color-text-muted)',
+              fontWeight: selectedRole === 'organizer' ? 600 : 500,
+              boxShadow: selectedRole === 'organizer' ? 'var(--glass-shadow)' : 'none'
+            }}>
+              <input type="radio" value="organizer" {...register('role')} style={{ display: 'none' }} />
+              Organizer
+            </label>
+
+            <label style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px',
+              border: `1px solid ${selectedRole === 'vendor' ? 'var(--color-primary)' : 'var(--glass-border)'}`,
+              background: selectedRole === 'vendor' ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
+              borderRadius: '12px', cursor: 'pointer', transition: 'all 0.3s ease',
+              color: selectedRole === 'vendor' ? 'var(--color-primary)' : 'var(--color-text-muted)',
+              fontWeight: selectedRole === 'vendor' ? 600 : 500,
+              boxShadow: selectedRole === 'vendor' ? 'var(--glass-shadow)' : 'none'
+            }}>
+              <input type="radio" value="vendor" {...register('role')} style={{ display: 'none' }} />
+              Vendor
+            </label>
           </div>
-        )}
+          {errors.role && (
+            <div className="field-error" style={{ marginTop: 8 }}>
+              <AlertCircle size={14} />
+              <span>{errors.role.message}</span>
+            </div>
+          )}
+        </div>
 
         <FloatingInput
           label="Full name"

@@ -1,4 +1,5 @@
-import { Leaf } from 'lucide-react';
+import { Leaf, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import './Auth.css';
 
 export default function AuthLayout({ children, heading, subtitle }) {
@@ -8,6 +9,11 @@ export default function AuthLayout({ children, heading, subtitle }) {
       <div className="auth-branding">
         <div className="auth-orb auth-orb-1" />
         <div className="auth-orb auth-orb-2" />
+
+        <Link to="/" className="auth-return-home">
+          <ArrowLeft size={20} />
+          <span>Return to Home</span>
+        </Link>
 
         <div className="auth-branding-content">
           <div className="auth-branding-logo">

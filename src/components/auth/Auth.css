@@ -31,6 +31,42 @@
   border-right: 1px solid rgba(212, 175, 55, 0.15);
 }
 
+.auth-return-home {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.auth-return-home:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateX(-4px);
+}
+
+[data-theme='dark'] .auth-return-home {
+  color: var(--color-accent);
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.2);
+}
+
+[data-theme='dark'] .auth-return-home:hover {
+  background: rgba(212, 175, 55, 0.2);
+}
+
 .auth-branding-content {
   position: relative;
   z-index: 2;
@@ -122,9 +158,19 @@
 }
 
 @keyframes orbFloat {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(20px, -30px) scale(1.05); }
-  66% { transform: translate(-15px, 15px) scale(0.95); }
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(20px, -30px) scale(1.05);
+  }
+
+  66% {
+    transform: translate(-15px, 15px) scale(0.95);
+  }
 }
 
 /* ======================== FORM PANEL ======================== */
@@ -161,6 +207,7 @@
     opacity: 0;
     transform: translateY(24px) scale(0.97);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -240,20 +287,20 @@
   padding: 0 4px;
 }
 
-.floating-input:focus ~ .floating-label,
-.floating-input:not(:placeholder-shown) ~ .floating-label {
+.floating-input:focus~.floating-label,
+.floating-input:not(:placeholder-shown)~.floating-label {
   top: 2px;
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--color-primary);
 }
 
-[data-theme='dark'] .floating-input:focus ~ .floating-label,
-[data-theme='dark'] .floating-input:not(:placeholder-shown) ~ .floating-label {
+[data-theme='dark'] .floating-input:focus~.floating-label,
+[data-theme='dark'] .floating-input:not(:placeholder-shown)~.floating-label {
   color: var(--color-accent);
 }
 
-.floating-input.has-error ~ .floating-label {
+.floating-input.has-error~.floating-label {
   color: #ef4444;
 }
 
@@ -269,12 +316,22 @@
 }
 
 @keyframes statusPop {
-  from { transform: translateY(-50%) scale(0); }
-  to { transform: translateY(-50%) scale(1); }
+  from {
+    transform: translateY(-50%) scale(0);
+  }
+
+  to {
+    transform: translateY(-50%) scale(1);
+  }
 }
 
-.input-status-icon.valid { color: var(--color-accent); }
-.input-status-icon.invalid { color: #ef4444; }
+.input-status-icon.valid {
+  color: var(--color-accent);
+}
+
+.input-status-icon.invalid {
+  color: #ef4444;
+}
 
 /* ======================== PASSWORD INPUT ======================== */
 .password-input-wrapper {
@@ -339,7 +396,7 @@
   white-space: nowrap;
 }
 
-.password-reveal-btn:hover ~ .password-reveal-hint {
+.password-reveal-btn:hover~.password-reveal-hint {
   opacity: 1;
 }
 
@@ -359,8 +416,15 @@
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ======================== PASSWORD STRENGTH ======================== */
@@ -388,10 +452,21 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-.strength-bar-segment.filled.weak { background: #ef4444; }
-.strength-bar-segment.filled.fair { background: #f59e0b; }
-.strength-bar-segment.filled.good { background: #3b82f6; }
-.strength-bar-segment.filled.strong { background: #22c55e; }
+.strength-bar-segment.filled.weak {
+  background: #ef4444;
+}
+
+.strength-bar-segment.filled.fair {
+  background: #f59e0b;
+}
+
+.strength-bar-segment.filled.good {
+  background: #3b82f6;
+}
+
+.strength-bar-segment.filled.strong {
+  background: #22c55e;
+}
 
 .strength-label {
   font-size: 0.78rem;
@@ -399,10 +474,21 @@
   margin-bottom: 6px;
 }
 
-.strength-label.weak { color: #ef4444; }
-.strength-label.fair { color: #f59e0b; }
-.strength-label.good { color: #3b82f6; }
-.strength-label.strong { color: #22c55e; }
+.strength-label.weak {
+  color: #ef4444;
+}
+
+.strength-label.fair {
+  color: #f59e0b;
+}
+
+.strength-label.good {
+  color: #3b82f6;
+}
+
+.strength-label.strong {
+  color: #22c55e;
+}
 
 .strength-requirements {
   display: grid;
@@ -447,9 +533,17 @@
 }
 
 @keyframes checkPop {
-  0% { transform: scale(0); }
-  60% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+  }
+
+  60% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* ======================== SUBMIT BUTTON ======================== */
@@ -537,7 +631,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Success checkmark */
@@ -547,8 +643,13 @@
 }
 
 @keyframes checkmarkDraw {
-  from { transform: scale(0) rotate(-45deg); }
-  to { transform: scale(1) rotate(0); }
+  from {
+    transform: scale(0) rotate(-45deg);
+  }
+
+  to {
+    transform: scale(1) rotate(0);
+  }
 }
 
 /* ======================== FORM EXTRAS ======================== */
