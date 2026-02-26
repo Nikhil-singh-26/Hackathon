@@ -1,5 +1,8 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, CalendarDays, BarChart3, Settings, Moon, Sun, LogOut } from 'lucide-react';
+import {
+  LayoutDashboard, CalendarDays, BarChart3, Settings,
+  Moon, Sun, LogOut, Home, Bell, User
+} from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import './Dashboard.css';
@@ -13,7 +16,7 @@ const NAV_ITEMS = [
 
 export default function DashboardLayout() {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
   useEffect(() => {
@@ -25,65 +28,67 @@ export default function DashboardLayout() {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
-  const handleAvatarClick = () => {
-    navigate('/dashboard/settings');
-  };
-
   const handleLogout = async () => {
     await logout();
     navigate('/auth/login');
   };
 
   return (
-    <div className="os-layout">
-      {/* Top Navigation Bar */}
-      <header className="os-top-nav">
-        <div className="os-nav-left">
-          <Link to="/" style={{ textDecoration: 'none' }}>
-            <div className="os-sidebar-logo">EventFlex</div>
-          </Link>
-          <nav className="os-nav-links">
-            {NAV_ITEMS.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                end={item.end}
-                className={({ isActive }) =>
-                  `os-nav-item ${isActive ? 'active' : ''}`
-                }
-              >
-                <item.icon size={16} />
-                <span>{item.label}</span>
-              </NavLink>
-            ))}
-          </nav>
+    <div className="os-layout glass-dashboard">
+      {/* Sidebar */}
+      <aside className="os-sidebar glass-sidebar">
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <div className="os-sidebar-logo">EventFlex</div>
+        </Link>
+        <div className="os-sidebar-nav">
+          {NAV_ITEMS.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              end={item.end}
+              className={({ isActive }) =>
+                `os-nav-item ${isActive ? 'active' : ''}`
+              }
+            >
+              <item.icon size={18} />
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
         </div>
 
-        <div className="os-nav-right">
-          <button className="theme-toggle flex items-center justify-center" onClick={toggleTheme} style={{ background: 'transparent', border: 'none', color: 'var(--color-text-main)', cursor: 'pointer', padding: '8px', borderRadius: '50%', transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
-            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+        <div className="os-sidebar-bottom">
+          <button className="os-nav-item text-danger" onClick={handleLogout} style={{ color: '#ef4444' }}>
+            <LogOut size={18} />
+            <span>Logout</span>
           </button>
 
-          <div className="os-user-controls">
-            <div
-              className="os-topbar-avatar"
-              onClick={handleAvatarClick}
-              title="Settings"
-            />
-            <button onClick={handleLogout} className="os-logout-btn">
-              <LogOut size={16} />
-              <span>Logout</span>
-            </button>
+          <div className="os-user-profile mt-4">
+            <div className="os-user-avatar">
+              <User size={18} />
+            </div>
+            <div className="os-user-info">
+              <span className="user-name">{user?.name || 'Event Organizer'}</span>
+              <span className="user-email">{user?.email || 'organizer@eventflex.com'}</span>
+            </div>
           </div>
         </div>
-      </header>
+      </aside>
 
       {/* Main content */}
-      <main className="os-main">
-        <div className="os-content container">
+      <div className="os-main">
+        <div className="os-topbar glass-topbar">
+          <button className="os-icon-btn" title="Notifications">
+            <Bell size={20} />
+            <span className="os-badge">3</span>
+          </button>
+          <button className="os-icon-btn" onClick={toggleTheme} title="Toggle Theme">
+            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+          </button>
+        </div>
+        <div className="os-content">
           <Outlet />
         </div>
-      </main>
+      </div>
     </div>
   );
 }
