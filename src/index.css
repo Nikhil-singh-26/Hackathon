@@ -20,10 +20,10 @@
 
 [data-theme="dark"] {
   --color-dark-green: #fadb5f;
-  /* Golden */
+
   --color-green: #f5c02b;
   --color-primary: #d4af37;
-  /* Primary Gold */
+
   --color-accent: #ffd700;
   --color-light-bg: #111;
   --color-surface: rgba(255, 215, 0, 0.05);
@@ -93,7 +93,7 @@ button {
   overflow: hidden;
 }
 
-/* Shiny hover effect for glass cards */
+
 .glass-card::after {
   content: "";
   position: absolute;
@@ -224,7 +224,7 @@ button {
   transition: all 0.1s ease;
 }
 
-/* Dark Mode Overrides for Hardcoded Alpha Colors */
+
 [data-theme="dark"] .glass-card:hover {
   box-shadow: 0 20px 40px 0 rgba(212, 175, 55, 0.15);
   border: 1px solid rgba(212, 175, 55, 0.4);
@@ -263,10 +263,10 @@ button {
   box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
 }
 
-/* Specific Dark Mode Overrides */
+
 [data-theme="dark"] .contact-info {
   background: #111;
-  /* Keep it dark, but maybe use a subtle gold border and black bg */
+
   border-right: 1px solid rgba(212, 175, 55, 0.2);
 }
 
@@ -275,7 +275,7 @@ button {
 [data-theme="dark"] .contact-info p,
 [data-theme="dark"] .info-item p {
   color: var(--color-dark-green);
-  /* Golden text */
+
 }
 
 [data-theme="dark"] .info-item p {
@@ -327,7 +327,7 @@ section {
   margin: 0 auto 3rem;
 }
 
-/* Utilities */
+
 .flex {
   display: flex;
 }
@@ -396,7 +396,7 @@ section {
   position: absolute;
 }
 
-/* Role Selection Cards */
+
 .role-card {
   display: flex;
   flex-direction: column;

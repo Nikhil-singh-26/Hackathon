@@ -6,7 +6,7 @@ import VendorDashboard from './VendorDashboard';
 const STATS = [
   {
     label: 'Total Revenue',
-    value: '₹45,231.89',
+    value: 'â‚¹45,231.89',
     change: '+20.1% from last month',
     icon: DollarSign,
   },
@@ -31,10 +31,10 @@ const STATS = [
 ];
 
 const RECENT_ACTIVITY = [
-  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+₹1,999.00' },
-  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+₹1,999.00' },
-  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+₹1,999.00' },
-  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+₹1,999.00' },
+  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+â‚¹1,999.00' },
+  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+â‚¹1,999.00' },
+  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+â‚¹1,999.00' },
+  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+â‚¹1,999.00' },
 ];
 
 export default function OverviewPage() {
@@ -52,7 +52,7 @@ export default function OverviewPage() {
     <>
       <h1 className="os-page-title">Overview</h1>
 
-      {/* Stat cards */}
+      {}
       <div className="os-stats-grid">
         {STATS.map((stat, i) => (
           <div key={i} className="os-stat-card">
@@ -66,7 +66,7 @@ export default function OverviewPage() {
         ))}
       </div>
 
-      {/* Overview grid: chart + activity */}
+      {}
       <div className="os-overview-grid">
         <div className="os-panel">
           <h3 className="os-panel-title">Overview</h3>

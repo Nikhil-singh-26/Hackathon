@@ -22,7 +22,7 @@ export default function SubmitButton({
       {isLoading ? (
         <>
           <span className="btn-spinner" />
-          <span>Processing…</span>
+          <span>Processingâ€¦</span>
         </>
       ) : isSuccess ? (
         <>

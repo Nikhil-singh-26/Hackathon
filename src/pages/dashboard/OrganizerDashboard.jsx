@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { 
-  Users, 
-  MapPin, 
-  Search, 
-  MessageSquare, 
+import {
+  Users,
+  MapPin,
+  Search,
+  MessageSquare,
   Star,
   Navigation,
   X
@@ -26,9 +26,9 @@ export default function OrganizerDashboard() {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      
+
       if (searchQuery.trim()) {
-        // Global search across all vendors
+
         const res = await axios.get(`${API_URL}/users/vendors`, {
           params: { search: searchQuery },
           headers: { Authorization: `Bearer ${token}` }
@@ -36,7 +36,7 @@ export default function OrganizerDashboard() {
         setVendors(res.data.data);
         setLoading(false);
       } else {
-        // Nearby scan logic
+
         navigator.geolocation.getCurrentPosition(async (position) => {
           const { latitude, longitude } = position.coords;
           const res = await axios.get(`${API_URL}/users/nearby`, {
@@ -47,7 +47,7 @@ export default function OrganizerDashboard() {
           setLoading(false);
         }, (err) => {
           console.error("Geolocation error", err);
-          // Fallback to all vendors if geo fails
+
           const res = axios.get(`${API_URL}/users/vendors`, {
             headers: { Authorization: `Bearer ${token}` }
           }).then(res => {
@@ -89,12 +89,12 @@ export default function OrganizerDashboard() {
           <h1 className="os-page-title">Find Vendors</h1>
           <p className="text-muted">Discover and connect with service providers near you.</p>
         </div>
-        
+
         {!searchQuery && (
           <div className="flex gap-4 items-center bg-white/50 p-2 rounded-xl border">
             <Navigation size={18} className="text-primary ml-2" />
-            <select 
-              value={radius} 
+            <select
+              value={radius}
               onChange={(e) => setRadius(e.target.value)}
               className="bg-transparent border-none outline-none font-medium p-1"
             >
@@ -109,15 +109,15 @@ export default function OrganizerDashboard() {
 
       <div className="glass-card p-4 mb-8 flex items-center gap-4 relative">
         <Search className={searchQuery ? "text-primary" : "text-muted"} size={20} />
-        <input 
-          type="text" 
-          placeholder="Search by business name, Category, or keyword..." 
+        <input
+          type="text"
+          placeholder="Search by business name, Category, or keyword..."
           className="bg-transparent border-none outline-none w-full text-lg"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         {searchQuery && (
-          <button 
+          <button
             onClick={() => setSearchQuery('')}
             className="absolute right-4 p-2 hover:bg-black/5 rounded-full transition-colors"
           >
@@ -140,8 +140,8 @@ export default function OrganizerDashboard() {
             {searchQuery ? `No results for "${searchQuery}"` : "No vendors found nearby"}
           </h3>
           <p className="text-muted">
-            {searchQuery 
-              ? "Try searching for something else or clear the search to see nearby vendors." 
+            {searchQuery
+              ? "Try searching for something else or clear the search to see nearby vendors."
               : "Try increasing the search radius or checking back later."}
           </p>
         </div>
@@ -158,7 +158,7 @@ export default function OrganizerDashboard() {
                   4.8
                 </div>
               </div>
-              
+
               <div className="p-5 flex-grow">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="font-bold text-lg">{vendor.businessName || vendor.name}</h3>
@@ -167,22 +167,22 @@ export default function OrganizerDashboard() {
                 <p className="text-sm text-muted line-clamp-2 mb-4">
                   {vendor.description || "No description available for this vendor."}
                 </p>
-                
+
                 <div className="flex items-center gap-2 text-xs text-muted mb-4">
                   <MapPin size={14} />
                   <span>~2.4 km away</span>
                 </div>
               </div>
-              
+
               <div className="p-5 bg-white/10 border-t flex gap-3">
-                <button 
+                <button
                   onClick={() => handleChat(vendor._id)}
                   className="flex-1 glass-btn py-2 flex items-center justify-center gap-2"
                 >
                   <MessageSquare size={16} />
                   <span>Chat</span>
                 </button>
-                <button 
+                <button
                   onClick={() => navigate(`/vendor/${vendor._id}`)}
                   className="flex-1 solid-btn py-2"
                 >

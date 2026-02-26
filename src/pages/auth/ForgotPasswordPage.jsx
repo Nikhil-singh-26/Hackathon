@@ -38,7 +38,7 @@ export default function ForgotPasswordPage() {
       setSubmittedEmail(data.email);
       setIsSuccess(true);
     } catch {
-      // Even on error, show success to prevent email enumeration
+
       setSubmittedEmail(data.email);
       setIsSuccess(true);
     } finally {
@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
       subtitle={
         isSuccess
           ? undefined
-          : "No worries — we'll send you reset instructions"
+          : "No worries â€” we'll send you reset instructions"
       }
     >
       {isSuccess ? (

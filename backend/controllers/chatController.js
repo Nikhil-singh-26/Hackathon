@@ -2,9 +2,9 @@ const Chat = require("../models/Chat");
 const Message = require("../models/Message");
 const User = require("../models/User");
 
-// ============================================================
-// Create or fetch a one-on-one chat
-// ============================================================
+
+
+
 const accessChat = async (req, res) => {
   const { userId } = req.body;
 
@@ -44,9 +44,9 @@ const accessChat = async (req, res) => {
   }
 };
 
-// ============================================================
-// Get all chats for a user
-// ============================================================
+
+
+
 const fetchChats = async (req, res) => {
   try {
     Chat.find({ participants: { $elemMatch: { $eq: req.user.id } } })
@@ -66,9 +66,9 @@ const fetchChats = async (req, res) => {
   }
 };
 
-// ============================================================
-// Send a message
-// ============================================================
+
+
+
 const sendMessage = async (req, res) => {
   const { content, chatId } = req.body;
 
@@ -101,9 +101,9 @@ const sendMessage = async (req, res) => {
   }
 };
 
-// ============================================================
-// Get all messages for a chat
-// ============================================================
+
+
+
 const allMessages = async (req, res) => {
   try {
     const messages = await Message.find({ chat: req.params.chatId })

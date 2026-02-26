@@ -10,9 +10,9 @@ const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 
-// ============================================================
-// Initialize Express & HTTP Server
-// ============================================================
+
+
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -23,17 +23,17 @@ const io = new Server(server, {
   },
 });
 
-// ============================================================
-// Middleware
-// ============================================================
+
+
+
 const allowedOrigins = process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',') : ["http://localhost:5173"];
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// ============================================================
-// Routes
-// ============================================================
+
+
+
 app.get("/", (req, res) => {
   res.json({ status: "ok", message: "EventFlex API with Socket.io is running" });
 });
@@ -43,11 +43,11 @@ app.use("/api/users", userRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/bookings", bookingRoutes);
 
-// ============================================================
-// Socket.io Logic
-// ============================================================
+
+
+
 io.on("connection", (socket) => {
-  console.log("⚡ A user connected:", socket.id);
+  console.log("âš¡ A user connected:", socket.id);
 
   socket.on("setup", (userData) => {
     socket.join(userData.id);
@@ -76,9 +76,9 @@ io.on("connection", (socket) => {
   });
 });
 
-// ============================================================
-// Error Handlers
-// ============================================================
+
+
+
 app.use((req, res) => {
   res.status(404).json({ message: `Route ${req.originalUrl} not found` });
 });
@@ -90,13 +90,13 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ============================================================
-// Start Server
-// ============================================================
+
+
+
 const PORT = process.env.PORT || 5000;
 
 connectDB().then(() => {
   server.listen(PORT, () => {
-    console.log(`✅ Server running on port ${PORT}`);
+    console.log(`âœ… Server running on port ${PORT}`);
   });
 });

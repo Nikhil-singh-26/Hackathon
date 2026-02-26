@@ -71,9 +71,9 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // Geolocation state for vendors
-  const [locationStatus, setLocationStatus] = useState('idle'); // idle, loading, success, error
-  const [coordinates, setCoordinates] = useState(null); // { lat, lng }
+
+  const [locationStatus, setLocationStatus] = useState('idle');
+  const [coordinates, setCoordinates] = useState(null);
   const [address, setAddress] = useState('');
 
   const {
@@ -136,9 +136,9 @@ export default function SignupPage() {
     }
 
     try {
-      await signup({ 
-        name: data.name, 
-        email: data.email, 
+      await signup({
+        name: data.name,
+        email: data.email,
         password: data.password,
         role: data.role,
         businessName: data.businessName,
@@ -169,7 +169,7 @@ export default function SignupPage() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        {/* Role Selection */}
+        {}
         <div style={{ marginBottom: 24 }}>
           <label className="auth-label" style={{ marginBottom: 12, display: 'block', color: 'var(--color-text-main)', fontSize: '0.9rem', fontWeight: 600 }}>I am a:</label>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -239,7 +239,7 @@ export default function SignupPage() {
                 {selectedRole === 'vendor' ? 'Vendor Headquarters Location' : 'Organizer Hub Location'}
               </label>
             </div>
-            
+
             {locationStatus !== 'success' && (
               <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginBottom: 12, lineHeight: 1.4 }}>
                 {selectedRole === 'vendor'
@@ -291,8 +291,8 @@ export default function SignupPage() {
                   <p className="address-text">
                     {address || 'Fetching detailed address...'}
                   </p>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="address-relocate"
                     onClick={() => {
                       setLocationStatus('idle');
@@ -306,7 +306,7 @@ export default function SignupPage() {
                 </div>
               </div>
             )}
-            
+
             {locationStatus === 'error' && (
                <div className="field-error" style={{ marginTop: 10 }}>
                  <AlertCircle size={14} />

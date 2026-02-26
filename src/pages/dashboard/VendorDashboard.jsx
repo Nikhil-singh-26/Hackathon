@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { 
-  Building2, 
-  MapPin, 
-  Phone, 
-  ToggleLeft, 
-  ToggleRight, 
-  CheckCircle, 
+import {
+  Building2,
+  MapPin,
+  Phone,
+  ToggleLeft,
+  ToggleRight,
+  CheckCircle,
   AlertCircle,
   MessageSquare,
   Calendar
@@ -21,7 +21,7 @@ export default function VendorDashboard() {
   const [msg, setMsg] = useState({ type: '', text: '' });
   const [availability, setAvailability] = useState(user?.availability || []);
   const [bookings, setBookings] = useState([]);
-  
+
   useEffect(() => {
     const fetchBookings = async () => {
       try {
@@ -36,7 +36,7 @@ export default function VendorDashboard() {
     };
     fetchBookings();
   }, []);
-  
+
   const [formData, setFormData] = useState({
     businessName: user?.businessName || '',
     description: user?.description || '',
@@ -45,7 +45,7 @@ export default function VendorDashboard() {
     status: user?.status || 'active'
   });
 
-  // Simple calendar generator for next 30 days
+
   const upcomingDates = Array.from({ length: 30 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() + i);
@@ -69,13 +69,13 @@ export default function VendorDashboard() {
     if (e) e.preventDefault();
     setLoading(true);
     setMsg({ type: '', text: '' });
-    
+
     try {
       const token = localStorage.getItem('token');
       const res = await axios.patch(`${API_URL}/users/update-profile`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       setUser({ ...user, ...res.data.data });
       setMsg({ type: 'success', text: 'Profile updated successfully!' });
     } catch (err) {
@@ -88,7 +88,7 @@ export default function VendorDashboard() {
   const toggleLocation = () => {
     const newVal = !formData.isLocationSharing;
     setFormData({ ...formData, isLocationSharing: newVal });
-    // Proactively save this toggle
+
     setTimeout(() => handleUpdate(null), 100);
   };
 
@@ -103,7 +103,7 @@ export default function VendorDashboard() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="os-page-title">Vendor Dashboard</h1>
         <div className="flex gap-4">
-          <button 
+          <button
             className={`glass-btn flex items-center gap-2 ${formData.status === 'active' ? 'text-green' : 'text-muted'}`}
             onClick={toggleStatus}
           >
@@ -127,12 +127,12 @@ export default function VendorDashboard() {
               <Building2 size={24} className="text-primary" />
               Business Profile
             </h3>
-            
+
             <form onSubmit={handleUpdate} className="grid gap-6">
               <div className="form-group">
                 <label className="text-sm font-medium mb-2 block">Business Name</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   className="os-input w-full p-3 rounded-lg bg-white/50 border"
                   value={formData.businessName}
                   onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
@@ -142,7 +142,7 @@ export default function VendorDashboard() {
 
               <div className="form-group">
                 <label className="text-sm font-medium mb-2 block">Description</label>
-                <textarea 
+                <textarea
                   className="os-input w-full p-3 rounded-lg bg-white/50 border min-h-[120px]"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -155,8 +155,8 @@ export default function VendorDashboard() {
                   <label className="text-sm font-medium mb-2 block">Phone Number</label>
                   <div className="relative">
                     <Phone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-                    <input 
-                      type="tel" 
+                    <input
+                      type="tel"
                       className="os-input w-full p-3 pl-10 rounded-lg bg-white/50 border"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -178,7 +178,7 @@ export default function VendorDashboard() {
               Availability Management
             </h3>
             <p className="text-sm text-muted mb-4">Click on dates to toggle your availability for organizers.</p>
-            
+
             <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
               {upcomingDates.map((date) => {
                 const d = new Date(date);
@@ -188,8 +188,8 @@ export default function VendorDashboard() {
                     key={date}
                     onClick={() => toggleAvailability(date)}
                     className={`p-3 rounded-xl border transition-all flex flex-col items-center gap-1 ${
-                      isAvailable 
-                        ? 'bg-primary/10 border-primary text-primary' 
+                      isAvailable
+                        ? 'bg-primary/10 border-primary text-primary'
                         : 'bg-white/50 border-white/20 hover:border-primary/50'
                     }`}
                   >
@@ -210,13 +210,13 @@ export default function VendorDashboard() {
               <MapPin size={20} className="text-primary" />
               Location Settings
             </h3>
-            
+
             <div className="flex items-center justify-between p-4 bg-white/30 rounded-xl border border-white/50">
               <div>
                 <div className="font-bold">Live Location</div>
                 <div className="text-xs text-muted">Share your current spot</div>
               </div>
-              <button 
+              <button
                 className={`text-3xl ${formData.isLocationSharing ? 'text-accent' : 'text-muted'}`}
                 onClick={toggleLocation}
               >

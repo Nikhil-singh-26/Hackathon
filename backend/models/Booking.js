@@ -13,7 +13,7 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
     date: {
-      type: String, // String in YYYY-MM-DD format
+      type: String,
       required: true,
     },
     status: {

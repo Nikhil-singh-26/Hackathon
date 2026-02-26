@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  MessageSquare, 
-  Search, 
-  Clock, 
+import {
+  MessageSquare,
+  Search,
+  Clock,
   User as UserIcon,
   ChevronRight
 } from 'lucide-react';
@@ -46,7 +46,7 @@ export default function ChatsPage() {
       setChats((prev) => {
         const chatToUpdate = prev.find(c => c._id === newMessage.chat._id);
         if (chatToUpdate) {
-            // Update latest message and move to top
+
             const updatedChat = { ...chatToUpdate, latestMessage: newMessage, updatedAt: new Date().toISOString() };
             return [updatedChat, ...prev.filter(c => c._id !== newMessage.chat._id)];
         }
@@ -73,9 +73,9 @@ export default function ChatsPage() {
 
       <div className="glass-card p-4 mb-6 flex items-center gap-4">
         <Search className="text-muted" size={20} />
-        <input 
-          type="text" 
-          placeholder="Search conversations..." 
+        <input
+          type="text"
+          placeholder="Search conversations..."
           className="bg-transparent border-none outline-none w-full text-lg"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -98,8 +98,8 @@ export default function ChatsPage() {
           filteredChats.map((chat) => {
             const otherParticipant = chat.participants.find(p => p._id !== user.id);
             return (
-              <div 
-                key={chat._id} 
+              <div
+                key={chat._id}
                 onClick={() => navigate(`/dashboard/chat/${chat._id}`)}
                 className="glass-card hover:bg-white/40 transition-all cursor-pointer p-4 flex items-center justify-between group"
               >
@@ -114,7 +114,7 @@ export default function ChatsPage() {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex flex-col items-end gap-2 text-xs text-muted">
                   <div className="flex items-center gap-1">
                     <Clock size={12} />

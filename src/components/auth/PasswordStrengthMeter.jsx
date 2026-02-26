@@ -30,7 +30,7 @@ export default function PasswordStrengthMeter({ password = '' }) {
 
   return (
     <div className="password-strength">
-      {/* Strength bar */}
+      {}
       <div className="strength-bar-track">
         {[1, 2, 3, 4].map((seg) => (
           <div
@@ -47,7 +47,7 @@ export default function PasswordStrengthMeter({ password = '' }) {
         {analysis.label}
       </div>
 
-      {/* Requirements checklist */}
+      {}
       <div className="strength-requirements">
         {analysis.results.map((req) => (
           <div key={req.key} className={`strength-req ${req.met ? 'met' : ''}`}>

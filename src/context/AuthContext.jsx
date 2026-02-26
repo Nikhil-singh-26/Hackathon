@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check for existing session on mount
+
   useEffect(() => {
     let cancelled = false;
     const checkAuth = async () => {
@@ -25,7 +25,7 @@ export function AuthProvider({ children }) {
           setIsAuthenticated(true);
         }
       } catch {
-        // No valid session
+
       } finally {
         if (!cancelled) setIsLoading(false);
       }

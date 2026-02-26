@@ -17,7 +17,7 @@ export default function PasswordInput({
   }, []);
 
   const handleMouseDown = useCallback((e) => {
-    e.preventDefault(); // prevents stealing focus from input
+    e.preventDefault();
     setIsRevealed(true);
   }, []);
 

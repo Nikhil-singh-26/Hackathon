@@ -5,7 +5,7 @@ const stats = [
     { value: 10000, label: "Events Managed", prefix: "", suffix: "+" },
     { value: 5000, label: "Verified Vendors", prefix: "", suffix: "+" },
     { value: 98, label: "Customer Satisfaction", prefix: "", suffix: "%" },
-    { value: 50, label: "Bookings", prefix: "₹", suffix: "Cr+" }
+    { value: 50, label: "Bookings", prefix: "â‚¹", suffix: "Cr+" }
 ];
 
 export default function Achievements() {

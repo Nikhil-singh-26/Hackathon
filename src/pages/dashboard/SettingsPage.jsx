@@ -9,7 +9,7 @@ export default function SettingsPage() {
   const [email] = useState(user?.email || 'demo@eventflex.com');
   const [phone, setPhone] = useState(user?.phone || '+91 98765 43210');
 
-  // Notification states
+
   const [emailNotif, setEmailNotif] = useState(true);
   const [pushNotif, setPushNotif] = useState(false);
   const [marketingNotif, setMarketingNotif] = useState(false);
@@ -57,7 +57,7 @@ export default function SettingsPage() {
       <h1 className="os-page-title">Settings</h1>
 
       <div className="os-settings-layout flex gap-8">
-        {/* Settings Sidebar */}
+        {}
         <div className="w-64 flex flex-col gap-2">
           <button
             className={`os-nav-item ${activeTab === 'profile' ? 'active' : ''}`}
@@ -79,7 +79,7 @@ export default function SettingsPage() {
           </button>
         </div>
 
-        {/* Settings Content */}
+        {}
         <div className="flex-1">
           {activeTab === 'profile' && (
             <div className="os-panel animate-in fade-in slide-in-from-bottom-4 duration-300">
@@ -150,14 +150,14 @@ export default function SettingsPage() {
                         {locationStatus === 'loading' ? <Loader2 className="spin" size={16} /> : <MapPin size={16} />}
                         {locationStatus === 'idle' && 'Update GPS Location'}
                         {locationStatus === 'loading' && 'Acquiring GPS Signal...'}
-                        {locationStatus === 'success' && '✓ Location Updated!'}
-                        {locationStatus === 'error' && '✗ Error Grabbing GPS - Try Again'}
+                        {locationStatus === 'success' && 'âœ“ Location Updated!'}
+                        {locationStatus === 'error' && 'âœ— Error Grabbing GPS - Try Again'}
                       </button>
                     </div>
                   )}
 
                   <button type="submit" className="os-save-btn mt-6">
-                    {saved ? '✓ Saved!' : 'Save Changes'}
+                    {saved ? 'âœ“ Saved!' : 'Save Changes'}
                   </button>
                 </form>
               </div>
@@ -212,7 +212,7 @@ export default function SettingsPage() {
                 </div>
 
                 <button className="os-save-btn mt-6" onClick={handleSave}>
-                  {saved ? '✓ Saved!' : 'Save Preferences'}
+                  {saved ? 'âœ“ Saved!' : 'Save Preferences'}
                 </button>
               </div>
             </div>

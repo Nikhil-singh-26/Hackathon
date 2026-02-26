@@ -5,7 +5,7 @@ import './Auth.css';
 export default function AuthLayout({ children, heading, subtitle }) {
   return (
     <div className="auth-page">
-      {/* ---- Left branding panel ---- */}
+      {}
       <div className="auth-branding">
         <div className="auth-orb auth-orb-1" />
         <div className="auth-orb auth-orb-2" />
@@ -28,7 +28,7 @@ export default function AuthLayout({ children, heading, subtitle }) {
         </div>
       </div>
 
-      {/* ---- Right form panel ---- */}
+      {}
       <div className="auth-form-panel">
         <div className="auth-form-card">
           {heading && <h1>{heading}</h1>}

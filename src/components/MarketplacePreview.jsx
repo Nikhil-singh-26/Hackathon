@@ -14,7 +14,7 @@ export default function MarketplacePreview() {
     const [vendorsList, setVendorsList] = useState(MOCK_VENDORS);
     const [loading, setLoading] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
-    const [searchStatus, setSearchStatus] = useState('idle'); // idle, loading, success, error, no-results
+    const [searchStatus, setSearchStatus] = useState('idle');
 
     useEffect(() => {
         const fetchInitialVendors = async () => {
@@ -24,12 +24,12 @@ export default function MarketplacePreview() {
                 if (res.data.data && res.data.data.length > 0) {
                     setVendorsList(res.data.data);
                 } else {
-                    setVendorsList(MOCK_VENDORS); // Fallback to mock if empty
+                    setVendorsList(MOCK_VENDORS);
                 }
                 setLoading(false);
             } catch (err) {
                 console.error("Failed to fetch vendors", err);
-                setVendorsList(MOCK_VENDORS); // Fallback on error
+                setVendorsList(MOCK_VENDORS);
                 setLoading(false);
             }
         };
@@ -60,13 +60,13 @@ export default function MarketplacePreview() {
                         setSearchStatus('success');
                         setShowAll(true);
                     } else {
-                        setVendorsList(MOCK_VENDORS); // Fallback to mock
+                        setVendorsList(MOCK_VENDORS);
                         setSearchStatus('no-results');
                     }
                 } catch (error) {
                     console.error("Error fetching nearby vendors:", error);
                     setSearchStatus('error');
-                    setVendorsList(MOCK_VENDORS); // Fallback
+                    setVendorsList(MOCK_VENDORS);
                 } finally {
                     setIsSearching(false);
                 }
@@ -75,7 +75,7 @@ export default function MarketplacePreview() {
                 console.error("Geolocation error:", error);
                 setSearchStatus('error');
                 setIsSearching(false);
-                setVendorsList(MOCK_VENDORS); // Fallback
+                setVendorsList(MOCK_VENDORS);
             },
             { enableHighAccuracy: true }
         );
@@ -127,10 +127,10 @@ export default function MarketplacePreview() {
                                 style={{ cursor: 'pointer' }}
                             >
                                 <div className="vendor-image-wrap">
-                                    <img 
-                                        src={vendor.images?.[0] || "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800"} 
-                                        alt={vendor.businessName || vendor.name} 
-                                        className="vendor-image" 
+                                    <img
+                                        src={vendor.images?.[0] || "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800"}
+                                        alt={vendor.businessName || vendor.name}
+                                        className="vendor-image"
                                     />
                                     <div className="vendor-category">{vendor.category || "Service Provider"}</div>
                                 </div>
@@ -145,7 +145,7 @@ export default function MarketplacePreview() {
                                     <div className="flex justify-between items-center mt-4">
                                         <div className="vendor-price">
                                             <span className="price-label">Starts at</span>
-                                            <p>{vendor.startingPrice || "₹15,000"}</p>
+                                            <p>{vendor.startingPrice || "â‚¹15,000"}</p>
                                         </div>
                                         <Link
                                             to={`/vendor/${vendor._id}`}

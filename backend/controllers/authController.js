@@ -1,33 +1,33 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-// ============================================================
-// Helper: generate JWT
-// ============================================================
+
+
+
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
 
-// ============================================================
-// POST /api/auth/signup
-// ============================================================
+
+
+
 const signup = async (req, res) => {
   try {
-    const { 
-      name, 
-      email, 
-      password, 
-      longitude, 
-      latitude, 
-      role, 
-      businessName, 
-      description, 
-      phone 
+    const {
+      name,
+      email,
+      password,
+      longitude,
+      latitude,
+      role,
+      businessName,
+      description,
+      phone
     } = req.body;
 
-    // Validate required fields
+
     if (!name || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -38,26 +38,26 @@ const signup = async (req, res) => {
       return res.status(400).json({ message: "Please use a trusted email provider (e.g. Gmail, Outlook, Yahoo)" });
     }
 
-    // Check if user already exists
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ message: "Email already registered" });
     }
 
-    // Create user with location and role data (password hashed by pre-save hook)
+
     const user = await User.create({
       name,
       email,
       password,
-      role: role || "organizer", // Default role to 'organizer' if not provided
+      role: role || "organizer",
       businessName: role === "vendor" ? businessName : undefined,
       description: role === "vendor" ? description : undefined,
       phone: role === "vendor" ? phone : undefined,
       location: {
         type: "Point",
         coordinates: [
-          parseFloat(longitude) || 0, // Default to 0 if not a valid number
-          parseFloat(latitude) || 0,  // Default to 0 if not a valid number
+          parseFloat(longitude) || 0,
+          parseFloat(latitude) || 0,
         ],
       },
     });
@@ -66,7 +66,7 @@ const signup = async (req, res) => {
       throw new Error("User was not created");
     }
 
-    // Generate token
+
     const token = generateToken(user._id);
 
     res.status(201).json({
@@ -81,7 +81,7 @@ const signup = async (req, res) => {
       token,
     });
   } catch (error) {
-    // Handle Mongoose validation errors
+
     if (error.name === "ValidationError") {
       const messages = Object.values(error.errors).map((e) => e.message);
       return res.status(400).json({ message: messages.join(", ") });
@@ -91,9 +91,9 @@ const signup = async (req, res) => {
   }
 };
 
-// ============================================================
-// POST /api/auth/login
-// ============================================================
+
+
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -102,19 +102,19 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Email and password are required" });
     }
 
-    // Find user and explicitly select password
+
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Compare password
+
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Generate token
+
     const token = generateToken(user._id);
 
     res.status(200).json({
@@ -133,9 +133,9 @@ const login = async (req, res) => {
   }
 };
 
-// ============================================================
-// GET /api/auth/me  (Protected)
-// ============================================================
+
+
+
 const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);

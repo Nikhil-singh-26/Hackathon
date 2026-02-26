@@ -53,7 +53,7 @@ export default function DashboardLayout() {
 
   return (
     <div className="os-layout glass-dashboard">
-      {/* Sidebar */}
+      {}
       <aside className="os-sidebar glass-sidebar">
         <Link to="/" style={{ textDecoration: 'none' }}>
           <div className="os-sidebar-logo">EventFlex</div>
@@ -92,7 +92,7 @@ export default function DashboardLayout() {
         </div>
       </aside>
 
-      {/* Main content */}
+      {}
       <div className="os-main">
         <div className="os-topbar glass-topbar">
 

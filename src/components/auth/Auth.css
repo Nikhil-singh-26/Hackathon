@@ -1,9 +1,6 @@
-/* ============================================================
-   Auth System Styles — EventFlex Marketplace
-   Uses existing CSS variables from index.css
-   ============================================================ */
 
-/* ======================== AUTH LAYOUT ======================== */
+
+
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -120,7 +117,7 @@
   color: var(--color-text-muted);
 }
 
-/* Decorative floating orbs */
+
 .auth-orb {
   position: absolute;
   border-radius: 50%;
@@ -173,7 +170,7 @@
   }
 }
 
-/* ======================== FORM PANEL ======================== */
+
 .auth-form-panel {
   flex: 1;
   display: flex;
@@ -228,7 +225,7 @@
   margin-bottom: 32px;
 }
 
-/* ======================== FLOATING INPUT ======================== */
+
 .floating-input-group {
   position: relative;
   margin-bottom: 24px;
@@ -304,7 +301,7 @@
   color: #ef4444;
 }
 
-/* Validation icon in the input */
+
 .input-status-icon {
   position: absolute;
   right: 14px;
@@ -333,7 +330,7 @@
   color: #ef4444;
 }
 
-/* ======================== PASSWORD INPUT ======================== */
+
 .password-input-wrapper {
   position: relative;
 }
@@ -400,7 +397,7 @@
   opacity: 1;
 }
 
-/* Caps lock alert */
+
 .caps-lock-alert {
   display: flex;
   align-items: center;
@@ -427,7 +424,7 @@
   }
 }
 
-/* ======================== PASSWORD STRENGTH ======================== */
+
 .password-strength {
   margin-top: 10px;
   margin-bottom: 8px;
@@ -546,7 +543,7 @@
   }
 }
 
-/* ======================== SUBMIT BUTTON ======================== */
+
 .auth-submit-btn {
   width: 100%;
   padding: 14px 28px;
@@ -615,7 +612,7 @@
   pointer-events: none;
 }
 
-/* Spinner */
+
 .btn-spinner {
   width: 20px;
   height: 20px;
@@ -636,7 +633,7 @@
   }
 }
 
-/* Success checkmark */
+
 .btn-checkmark {
   display: flex;
   animation: checkmarkDraw 0.5s ease-out;
@@ -652,7 +649,7 @@
   }
 }
 
-/* ======================== FORM EXTRAS ======================== */
+
 .auth-form-row {
   display: flex;
   align-items: center;
@@ -766,7 +763,7 @@
   color: var(--color-text-muted);
 }
 
-/* Error message */
+
 .field-error {
   display: flex;
   align-items: center;
@@ -805,7 +802,7 @@
   animation: slideDown 0.3s ease-out;
 }
 
-/* ======================== LOGIN DEVICES ======================== */
+
 .login-devices {
   margin-top: 20px;
   padding-top: 20px;
@@ -877,7 +874,7 @@
   font-size: 0.72rem;
 }
 
-/* ======================== RESPONSIVE ======================== */
+
 @media (max-width: 900px) {
   .auth-page {
     flex-direction: column;
@@ -932,7 +929,7 @@
   }
 }
 
-/* ======================== DASHBOARD ======================== */
+
 .dashboard-page {
   min-height: 100vh;
   background: var(--bg-gradient);
@@ -1034,7 +1031,7 @@
   background: var(--color-accent);
   box-shadow: 0 6px 16px rgba(212, 175, 55, 0.3);
 }
-/* ======================== ADDRESS CARD (SWIGGY/ZOMATO STYLE) ======================== */
+
 .address-card {
   margin-top: 12px;
   padding: 16px;

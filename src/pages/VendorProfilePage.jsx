@@ -11,26 +11,25 @@ import { MOCK_VENDORS } from '../constants/vendors';
 
 const API_URL = 'http://localhost:5000/api';
 
-// No numeric mock database - using API data
 
 export default function VendorProfilePage() {
     const { id } = useParams();
     const navigate = useNavigate();
-    
+
     const [vendor, setVendor] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeImg, setActiveImg] = useState(0);
     const [expandedFaq, setExpandedFaq] = useState(null);
     const [selectedDate, setSelectedDate] = useState("");
-    const [availabilityStatus, setAvailabilityStatus] = useState(null); // 'available', 'unavailable', 'not-fetched'
+    const [availabilityStatus, setAvailabilityStatus] = useState(null);
     const [bookingRequested, setBookingRequested] = useState(false);
 
     useEffect(() => {
         const fetchVendorData = async () => {
             if (!id) return;
 
-            // Check if it's a mock ID
+
             if (id.startsWith('mock-')) {
                 const mock = MOCK_VENDORS.find(v => v._id === id);
                 if (mock) {
@@ -58,7 +57,7 @@ export default function VendorProfilePage() {
     const checkAvailability = (date) => {
         const targetDate = date || selectedDate;
         if (!targetDate) return;
-        
+
         if (!vendor.availability || vendor.availability.length === 0) {
             setAvailabilityStatus('not-fetched');
             return;
@@ -69,6 +68,11 @@ export default function VendorProfilePage() {
         } else {
             setAvailabilityStatus('unavailable');
         }
+    };
+
+    const handleChat = () => {
+
+        navigate('/dashboard/chat');
     };
 
     const handleBooking = async () => {
@@ -104,14 +108,14 @@ export default function VendorProfilePage() {
         </div>
     );
 
-    // Default values if fields are missing in DB
+
     const displayVendor = {
         rating: 4.8,
         reviewsCount: 15,
         experience: "5+ Years",
         highlights: ["Verified", "Professional Staff", "Quick Response"],
         packages: [
-            { name: "Standard", price: "Starting from ₹15,000", features: ["Full service", "Basic support"] }
+            { name: "Standard", price: "Starting from â‚¹15,000", features: ["Full service", "Basic support"] }
         ],
         platePricing: { veg: "N/A", nonVeg: "N/A" },
         reviewsList: [],
@@ -129,13 +133,13 @@ export default function VendorProfilePage() {
             "https://images.unsplash.com/photo-1519167758481-83f5affe0fb5?auto=format&fit=crop&q=80&w=1200",
             "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=1200"
         ],
-        startingPrice: vendor.startingPrice || "₹15,000",
+        startingPrice: vendor.startingPrice || "â‚¹15,000",
         category: vendor.category || "Service Provider",
         location_str: vendor.location_str || "Near you",
         description: vendor.description || "Premium vendor providing top-notch services for your events."
     };
 
-    // Calendar for sidebar
+
     const upcomingDates = Array.from({ length: 14 }, (_, i) => {
         const d = new Date();
         d.setDate(d.getDate() + i + 1);
@@ -154,7 +158,7 @@ export default function VendorProfilePage() {
 
     return (
         <div className="vp-container">
-            {/* 1. Hero Section */}
+            {}
             <section className="vp-hero glass-card">
                 <div className="vp-hero-content">
                     <span className="vp-category">{displayVendor.category}</span>
@@ -180,7 +184,7 @@ export default function VendorProfilePage() {
                         <div className="flex gap-4">
                             {!bookingRequested ? (
                                 <>
-                                    <button 
+                                    <button
                                         className="glass-btn flex items-center gap-2"
                                         onClick={() => {
                                             document.getElementById('vp-availability').scrollIntoView({ behavior: 'smooth' });
@@ -188,7 +192,7 @@ export default function VendorProfilePage() {
                                     >
                                         <CalendarIcon size={18} /> Check Availability
                                     </button>
-                                    <button 
+                                    <button
                                         className="solid-btn"
                                         onClick={handleBooking}
                                     >
@@ -205,7 +209,7 @@ export default function VendorProfilePage() {
                 </div>
             </section>
 
-            {/* 3. Image Gallery */}
+            {}
             <section className="vp-gallery-section my-8">
                 <div className="vp-main-image glass-card">
                     <img src={displayVendor.images[activeImg]} alt="Main Venue" />
@@ -226,12 +230,12 @@ export default function VendorProfilePage() {
             <div className="vp-layout grid grid-cols-1 md-grid-cols-3 gap-8">
 
                 <div className="vp-main-content md-col-span-2">
-                    {/* 4. About Section */}
+                    {}
                     <section className="vp-section glass-card">
                         <h2 className="vp-section-title">About the Vendor</h2>
                         <p className="vp-description">{displayVendor.description}</p>
                         <div className="vp-experience mt-4 font-semibold text-primary">
-                            ✓ {displayVendor.experience} Experience
+                            âœ“ {displayVendor.experience} Experience
                         </div>
                         <div className="vp-highlights mt-4 grid grid-cols-2 gap-2">
                             {displayVendor.highlights.map((hlt, i) => (
@@ -242,7 +246,7 @@ export default function VendorProfilePage() {
                         </div>
                     </section>
 
-                    {/* 5. Pricing & Packages */}
+                    {}
                     <section className="vp-section glass-card mt-8">
                         <h2 className="vp-section-title">Pricing & Packages</h2>
                         <div className="vp-plate-pricing flex gap-6 mb-6">
@@ -264,14 +268,14 @@ export default function VendorProfilePage() {
                                         <span className="font-bold text-primary">{pkg.price}</span>
                                     </div>
                                     <ul className="text-sm vp-features-list">
-                                        {pkg.features.map((f, j) => <li key={j}>• {f}</li>)}
+                                        {pkg.features.map((f, j) => <li key={j}>â€¢ {f}</li>)}
                                     </ul>
                                 </div>
                             ))}
                         </div>
                     </section>
 
-                    {/* 7. Reviews Section */}
+                    {}
                     <section className="vp-section glass-card mt-8">
                         <div className="flex justify-between items-center mb-6">
                             <h2 className="vp-section-title mb-0">Reviews</h2>
@@ -313,7 +317,7 @@ export default function VendorProfilePage() {
                         </div>
                     </section>
 
-                    {/* 9. FAQ Section */}
+                    {}
                     <section className="vp-section glass-card mt-8">
                         <h2 className="vp-section-title">Frequently Asked Questions</h2>
                         <div className="vp-faqs">
@@ -331,9 +335,9 @@ export default function VendorProfilePage() {
                 </div>
 
                 <div className="vp-sidebar md-col-span-1">
-                    {/* 2. Quick Information Section */}
-                    <section className="vp-section glass-card vp-sticky-sidebar">
-                        <h3 className="font-bold text-xl mb-6">Quick Info</h3>
+                    {}
+                    <section className="vp-section glass-card">
+                        <h3 className="vp-sidebar-title">Quick Info</h3>
                         <div className="vp-quick-info grid gap-4">
                             <div className="flex items-start gap-3">
                                 <Users size={20} className="text-primary mt-1" />
@@ -362,15 +366,15 @@ export default function VendorProfilePage() {
                         </div>
                     </section>
 
-                    {/* 6. Availability & Booking Card */}
+                    {}
                     <section id="vp-availability" className="vp-section glass-card vp-booking-card mt-8">
-                        <h3 className="font-bold text-xl mb-4">Select Date & Book</h3>
+                        <h3 className="vp-sidebar-title">Availability</h3>
                         <div className="vp-calendar">
                             <div className="grid grid-cols-7 gap-1 text-center text-xs mb-2">
                                 <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
                             </div>
                             <div className="grid grid-cols-7 gap-1">
-                                {/* Dummy offset */}
+                                {}
                                 <div /><div />
                                 {upcomingDates.map((d, i) => (
                                     <div
@@ -388,7 +392,7 @@ export default function VendorProfilePage() {
                                     </div>
                                 ))}
                             </div>
-                            
+
                             <div className="mt-6 border-t pt-6">
                                 {availabilityStatus === 'available' && (
                                     <div className="mb-4 p-3 bg-green/10 text-green border border-green/20 rounded-lg text-sm flex items-center gap-2 animate-in fade-in slide-in-from-top-1">
@@ -407,7 +411,7 @@ export default function VendorProfilePage() {
                                 )}
 
                                 {!bookingRequested ? (
-                                    <button 
+                                    <button
                                         className="solid-btn w-full mb-3 text-lg py-3 shadow-lg"
                                         onClick={handleBooking}
                                         disabled={availabilityStatus !== 'available'}
@@ -420,22 +424,32 @@ export default function VendorProfilePage() {
                                     </div>
                                 )}
 
-                                <button className="glass-btn w-full flex items-center justify-center gap-2 py-3">
+                                <button
+                                    className="glass-btn w-full flex items-center justify-center gap-2 py-3"
+                                    onClick={handleChat}
+                                >
                                     <MessageCircle size={18} /> Chat with Vendor
                                 </button>
                             </div>
                         </div>
                     </section>
 
-                    {/* 8. Location Section */}
+                    {}
                     <section className="vp-section glass-card mt-8">
-                        <h3 className="font-bold text-xl mb-4">Location</h3>
+                        <h3 className="vp-sidebar-title">Location</h3>
                         <p className="text-sm mb-4"><MapPin size={14} className="inline mr-1" /> {displayVendor.location_str}</p>
-                        <div className="vp-map-mock h-48 rounded-lg overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=400" alt="Map Location" className="w-full h-full object-cover opacity-70" />
-                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20">
-                                <MapPin size={32} className="text-accent drop-shadow-lg" />
-                            </div>
+                        <div className="vp-map-container h-48 rounded-lg overflow-hidden relative shadow-inner">
+                            <iframe
+                                width="100%"
+                                height="100%"
+                                style={{ border: 0 }}
+                                loading="lazy"
+                                allowFullScreen
+                                src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBgfI-N7c2__9LWuJj3pS2UVua3S-Q2PRI&q=${encodeURIComponent(displayVendor.location_str)}`}
+                                title="Vendor Location"
+                            ></iframe>
+                            {}
+                            <div className="absolute inset-0 pointer-events-none border border-white/10 rounded-lg"></div>
                         </div>
                     </section>
 

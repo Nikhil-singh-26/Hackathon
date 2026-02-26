@@ -23,11 +23,11 @@ import EventsPage from './pages/dashboard/EventsPage';
 import AnalyticsPage from './pages/dashboard/AnalyticsPage';
 import VendorDashboard from './pages/dashboard/VendorDashboard';
 import OrganizerDashboard from './pages/dashboard/OrganizerDashboard';
-import ChatsPage from './pages/dashboard/ChatsPage'; // Added this
+import ChatsPage from './pages/dashboard/ChatsPage';
 import ChatPage from './pages/ChatPage';
 
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import { useAuth } from './hooks/useAuth'; // Assuming useAuth hook is available
+import { useAuth } from './hooks/useAuth';
 
 import './App.css';
 
@@ -51,17 +51,17 @@ function LandingPage() {
 function App() {
   return (
     <Routes>
-      {/* Public landing page */}
+      {}
       <Route path="/" element={<LandingPage />} />
       <Route path="/vendor/:id" element={<><Navbar /><VendorProfilePage /><Footer /></>} />
 
-      {/* Auth pages */}
+      {}
       <Route path="/auth/login" element={<LoginPage />} />
       <Route path="/auth/signup" element={<SignupPage />} />
       <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
-      {/* Protected dashboard with nested routes */}
+      {}
       <Route
         path="/dashboard"
         element={
@@ -72,7 +72,7 @@ function App() {
       >
         <Route index element={<OverviewPage />} />
         <Route path="events" element={<EventsPage />} />
-        <Route path="chat" element={<ChatsPage />} /> 
+        <Route path="chat" element={<ChatsPage />} />
         <Route path="chat/:chatId" element={<ChatPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="settings" element={<SettingsPage />} />

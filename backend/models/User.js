@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "organizer", "vendor", "admin"],
       default: "organizer",
     },
-    // Vendor specific fields
+
     businessName: {
       type: String,
       trim: true,
@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema(
       },
     },
     availability: {
-      type: [String], // Array of date strings "YYYY-MM-DD"
+      type: [String],
       default: [],
     },
   },
@@ -67,7 +67,7 @@ const userSchema = new mongoose.Schema(
 
 userSchema.index({ location: "2dsphere" });
 
-// --------------- Pre-save hook: hash password ---------------
+
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   const salt = await bcrypt.genSalt(12);

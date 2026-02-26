@@ -24,8 +24,8 @@ const requestBooking = async (req, res) => {
 
 const getMyBookings = async (req, res) => {
   try {
-    const query = req.user.role === "vendor" 
-      ? { vendor: req.user.id } 
+    const query = req.user.role === "vendor"
+      ? { vendor: req.user.id }
       : { organizer: req.user.id };
 
     const bookings = await Booking.find(query)

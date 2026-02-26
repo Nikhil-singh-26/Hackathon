@@ -14,7 +14,7 @@ export default function Hero() {
                 <div className="hero-text">
                     <h1 className="hero-title">Plan Events <span className="highlight-text">Smarter</span></h1>
                     <p className="hero-subtitle">
-                        Find verified vendors, manage bookings, and track your budget — all in one intelligent platform.
+                        Find verified vendors, manage bookings, and track your budget â€” all in one intelligent platform.
                     </p>
                     <div className="hero-actions">
                         <a href="#marketplace" className="solid-btn hero-btn flex items-center justify-center gap-2">
@@ -39,7 +39,7 @@ export default function Hero() {
                         <div className="dashboard-body grid grid-cols-2 gap-4">
                             <div className="stat-card glass-card">
                                 <p className="stat-title">Budget Used</p>
-                                <h3 className="stat-value">₹45,000</h3>
+                                <h3 className="stat-value">â‚¹45,000</h3>
                                 <div className="progress-bar">
                                     <div className="progress-fill"></div>
                                 </div>

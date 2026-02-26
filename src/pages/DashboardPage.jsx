@@ -12,7 +12,7 @@ import '../components/auth/Auth.css';
 const MOCK_STATS = [
   { label: 'Events Created', value: '12', icon: Calendar },
   { label: 'Total Attendees', value: '1,248', icon: Users },
-  { label: 'Revenue', value: '₹8,420', icon: TrendingUp },
+  { label: 'Revenue', value: 'â‚¹8,420', icon: TrendingUp },
 ];
 
 export default function DashboardPage() {
@@ -69,7 +69,7 @@ export default function DashboardPage() {
           style={{ padding: 32, textAlign: 'center' }}
         >
           <p style={{ color: 'var(--color-text-muted)' }}>
-            🚀 This is a protected route. Only authenticated users can see this
+            ðŸš€ This is a protected route. Only authenticated users can see this
             page. Connect your backend to see real data here.
           </p>
         </div>
