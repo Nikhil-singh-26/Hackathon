@@ -1,4 +1,7 @@
 import { DollarSign, CalendarDays, Users, TrendingUp } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
+import OrganizerDashboard from './OrganizerDashboard';
+import VendorDashboard from './VendorDashboard';
 
 const STATS = [
   {
@@ -35,6 +38,16 @@ const RECENT_ACTIVITY = [
 ];
 
 export default function OverviewPage() {
+  const { user } = useAuth();
+
+  if (user?.role === 'organizer') {
+    return <OrganizerDashboard />;
+  }
+
+  if (user?.role === 'vendor') {
+    return <VendorDashboard />;
+  }
+
   return (
     <>
       <h1 className="os-page-title">Overview</h1>

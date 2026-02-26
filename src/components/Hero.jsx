@@ -17,9 +17,9 @@ export default function Hero() {
                         Find verified vendors, manage bookings, and track your budget — all in one intelligent platform.
                     </p>
                     <div className="hero-actions">
-                        <Link to="/dashboard" className="solid-btn hero-btn flex items-center justify-center gap-2">
+                        <a href="#marketplace" className="solid-btn hero-btn flex items-center justify-center gap-2">
                             Explore Vendors <ArrowRight size={20} />
-                        </Link>
+                        </a>
                         <Link to="/dashboard/events" className="glass-btn hero-btn">
                             Create Event
                         </Link>
