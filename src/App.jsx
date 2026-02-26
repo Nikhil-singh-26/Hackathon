@@ -19,11 +19,16 @@ import VendorProfilePage from './pages/VendorProfilePage';
 
 import DashboardLayout from './pages/dashboard/DashboardLayout';
 import OverviewPage from './pages/dashboard/OverviewPage';
+import SettingsPage from './pages/dashboard/SettingsPage';
 import EventsPage from './pages/dashboard/EventsPage';
 import AnalyticsPage from './pages/dashboard/AnalyticsPage';
-import SettingsPage from './pages/dashboard/SettingsPage';
+import VendorDashboard from './pages/dashboard/VendorDashboard';
+import OrganizerDashboard from './pages/dashboard/OrganizerDashboard';
+import ChatsPage from './pages/dashboard/ChatsPage'; // Added this
+import ChatPage from './pages/ChatPage';
 
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import { useAuth } from './hooks/useAuth'; // Assuming useAuth hook is available
 
 import './App.css';
 
@@ -69,6 +74,8 @@ function App() {
       >
         <Route index element={<OverviewPage />} />
         <Route path="events" element={<EventsPage />} />
+        <Route path="chat" element={<ChatsPage />} /> 
+        <Route path="chat/:chatId" element={<ChatPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Star } from 'lucide-react';
+import { Star, MapPin, Loader2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './MarketplacePreview.css';
 
 export const vendors = [
@@ -82,14 +83,91 @@ export default function MarketplacePreview() {
     const [showAll, setShowAll] = useState(false);
     const navigate = useNavigate();
 
-    const displayedVendors = showAll ? vendors : vendors.slice(0, 4);
+    const [vendorsList, setVendorsList] = useState(vendors);
+    const [isSearching, setIsSearching] = useState(false);
+    const [searchStatus, setSearchStatus] = useState('idle'); // idle, loading, success, error, no-results
+
+    const handleFindNearby = () => {
+        if (!navigator.geolocation) {
+            setSearchStatus('error');
+            return;
+        }
+
+        setIsSearching(true);
+        setSearchStatus('loading');
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                try {
+                    const { latitude, longitude } = position.coords;
+                    // Our backend route uses radius in KM. So radius=5 means 5km.
+                    const API_URL = import.meta.env.VITE_API_URL || '/api';
+                    const response = await axios.get(`${API_URL}/users/nearby`, {
+                        params: { lat: latitude, lng: longitude, radius: 5, role: 'vendor' }
+                    });
+
+                    const nearbyVendors = response.data.users;
+
+                    if (nearbyVendors && nearbyVendors.length > 0) {
+                        // Map database schema to frontend card schema
+                        const mappedVendors = nearbyVendors.map(v => ({
+                            id: v._id,
+                            name: v.name,
+                            category: "Local Vendor", // Could be dynamic if schema supports it
+                            rating: "5.0", // Mock rating since DB doesn't have it yet
+                            reviews: 0,
+                            price: "Price on request",
+                            image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800"
+                        }));
+                        setVendorsList(mappedVendors);
+                        setSearchStatus('success');
+                        setShowAll(true); // show all nearby by default
+                    } else {
+                        setVendorsList([]);
+                        setSearchStatus('no-results');
+                    }
+                } catch (error) {
+                    console.error("Error fetching nearby vendors:", error);
+                    setSearchStatus('error');
+                } finally {
+                    setIsSearching(false);
+                }
+            },
+            (error) => {
+                console.error("Geolocation error:", error);
+                setSearchStatus('error');
+                setIsSearching(false);
+            },
+            { enableHighAccuracy: true }
+        );
+    };
+
+    const displayedVendors = showAll ? vendorsList : vendorsList.slice(0, 4);
 
     return (
-        <section id="marketplace" className="marketplace-section">
+        <section id="marketplace" className="marketplace-section" style={{ position: 'relative' }}>
             <div className="container">
-                <div className="text-center">
+                <div className="text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <h2 className="section-title">Top Rated Vendors</h2>
                     <p className="section-subtitle">Discover and book the best professionals for your special day.</p>
+
+                    <button
+                        onClick={handleFindNearby}
+                        disabled={isSearching}
+                        className="glass-btn"
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, marginBottom: 24,
+                            background: searchStatus === 'success' ? 'rgba(34, 197, 94, 0.1)' : 'var(--glass-bg)',
+                            borderColor: searchStatus === 'success' ? '#22c55e' : 'var(--glass-border)',
+                            color: searchStatus === 'success' ? '#22c55e' : 'var(--color-primary)'
+                        }}
+                    >
+                        {isSearching ? <Loader2 size={18} className="spin" /> : <MapPin size={18} />}
+                        {isSearching ? 'Scanning 5km Radius...' : searchStatus === 'success' ? 'Viewing Local Vendors (5km)' : 'Find Vendors near me (5km)'}
+                    </button>
+
+                    {searchStatus === 'error' && <p style={{ color: 'var(--color-error)', fontSize: '0.9rem' }}>Unable to access location or server error.</p>}
+                    {searchStatus === 'no-results' && <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>No vendors found within exactly 5km of your current location. Showing mock data instead.</p>}
                 </div>
 
                 <div className="vendor-grid">
@@ -130,14 +208,16 @@ export default function MarketplacePreview() {
                     ))}
                 </div>
 
-                <div className="text-center mt-12">
-                    <button
-                        className="solid-btn"
-                        onClick={() => setShowAll(!showAll)}
-                    >
-                        {showAll ? 'Show Less' : 'View All Vendors'}
-                    </button>
-                </div>
+                {searchStatus !== 'success' && (
+                    <div className="text-center mt-12">
+                        <button
+                            className="solid-btn"
+                            onClick={() => setShowAll(!showAll)}
+                        >
+                            {showAll ? 'Show Less' : 'View All Vendors'}
+                        </button>
+                    </div>
+                )}
             </div>
         </section>
     );

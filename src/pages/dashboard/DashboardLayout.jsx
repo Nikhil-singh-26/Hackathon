@@ -1,7 +1,7 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, CalendarDays, BarChart3, Settings,
-  Moon, Sun, LogOut, Home, Bell, User
+  Moon, Sun, LogOut, Home, Bell, User, MessageSquare
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
@@ -10,6 +10,7 @@ import './Dashboard.css';
 const NAV_ITEMS = [
   { path: '/dashboard', label: 'Overview', icon: LayoutDashboard, end: true },
   { path: '/dashboard/events', label: 'Events', icon: CalendarDays },
+  { path: '/dashboard/chat', label: 'Messages', icon: MessageSquare },
   { path: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
   { path: '/dashboard/settings', label: 'Settings', icon: Settings },
 ];
@@ -84,8 +85,8 @@ export default function DashboardLayout() {
               <User size={18} />
             </div>
             <div className="os-user-info">
-              <span className="user-name">{user?.name || 'Event Organizer'}</span>
-              <span className="user-email">{user?.email || 'organizer@eventflex.com'}</span>
+              <span className="user-name">{user?.name || 'User'}</span>
+              <span className="user-email">{user?.email || 'user@example.com'}</span>
             </div>
           </div>
         </div>

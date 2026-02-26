@@ -1,8 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const { getNearbyUsers } = require("../controllers/userController");
+const { getNearbyUsers, updateVendorProfile, getVendors, updateLocation } = require("../controllers/userController");
+const { protect, authorizeRoles } = require("../middleware/authMiddleware");
 
-// Nearby search route
-router.get("/nearby", getNearbyUsers);
+// Organizer routes
+router.get("/nearby", protect, authorizeRoles("organizer", "admin"), getNearbyUsers);
+router.get("/vendors", protect, authorizeRoles("organizer", "admin"), getVendors);
+
+// Vendor routes
+router.patch("/update-profile", protect, authorizeRoles("vendor", "admin"), updateVendorProfile);
+
+// Update location route
+router.put("/location", protect, updateLocation);
 
 module.exports = router;
