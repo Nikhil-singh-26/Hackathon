@@ -15,6 +15,8 @@ import SignupPage from './pages/auth/SignupPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 
+import VendorProfilePage from './pages/VendorProfilePage';
+
 import DashboardLayout from './pages/dashboard/DashboardLayout';
 import OverviewPage from './pages/dashboard/OverviewPage';
 import EventsPage from './pages/dashboard/EventsPage';
@@ -48,6 +50,7 @@ function App() {
     <Routes>
       {/* Public landing page */}
       <Route path="/" element={<LandingPage />} />
+      <Route path="/vendor/:id" element={<><Navbar /><VendorProfilePage /><Footer /></>} />
 
       {/* Auth pages */}
       <Route path="/auth/login" element={<LoginPage />} />
