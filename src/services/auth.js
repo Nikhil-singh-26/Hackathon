@@ -176,4 +176,12 @@ export const getCurrentUser = async () => {
   return data.user;
 };
 
+/**
+ * Update authenticated user's location
+ */
+export const updateUserLocation = async (coordinates) => {
+  const { data } = await api.put('/users/location', coordinates);
+  return data;
+};
+
 export default api;

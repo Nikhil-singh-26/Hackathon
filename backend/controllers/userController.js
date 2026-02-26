@@ -5,7 +5,7 @@ const User = require("../models/User");
 // ============================================================
 const getNearbyUsers = async (req, res) => {
   try {
-    const { lat, lng, radius } = req.query;
+    const { lat, lng, radius, role } = req.query;
 
     if (!lat || !lng) {
       return res.status(400).json({ message: "Latitude and longitude are required" });
@@ -16,7 +16,7 @@ const getNearbyUsers = async (req, res) => {
     const radiusInMeters = radiusInKm * 1000;
 
     // Filter only for vendors/users who are active and have location sharing enabled
-    const users = await User.find({
+    const query = {
       status: "active",
       isLocationSharing: true,
       location: {
@@ -25,10 +25,16 @@ const getNearbyUsers = async (req, res) => {
             type: "Point",
             coordinates: [parseFloat(lng), parseFloat(lat)],
           },
-          $maxDistance: radiusInKm * 1000,
+          $maxDistance: radiusInMeters,
         },
       },
-    }).select("-password");
+    };
+
+    if (role) {
+      query.role = role;
+    }
+
+    const users = await User.find(query).select("-password");
 
     res.status(200).json({
       status: "success",
@@ -94,4 +100,37 @@ const getVendors = async (req, res) => {
   }
 };
 
-module.exports = { getNearbyUsers, updateVendorProfile, getVendors };
+// ============================================================
+// PUT /api/users/location
+// ============================================================
+const updateLocation = async (req, res) => {
+  try {
+    const { lat, lng } = req.body;
+
+    if (!lat || !lng) {
+      return res.status(400).json({ message: "Latitude and longitude are required" });
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.location = {
+      type: "Point",
+      coordinates: [parseFloat(lng), parseFloat(lat)],
+    };
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Location updated successfully",
+      location: user.location,
+    });
+  } catch (error) {
+    console.error("Update location error:", error);
+    res.status(500).json({ message: "Server error. Please try again later." });
+  }
+};
+
+module.exports = { getNearbyUsers, updateVendorProfile, getVendors, updateLocation };
