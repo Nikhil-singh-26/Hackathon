@@ -15,7 +15,7 @@ const generateToken = (userId) => {
 // ============================================================
 const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, longitude, latitude } = req.body;
 
     // Validate required fields
     if (!name || !email || !password) {
@@ -28,8 +28,21 @@ const signup = async (req, res) => {
       return res.status(409).json({ message: "Email already registered" });
     }
 
+    // Prepare user data
+    const userData = { name, email, password };
+    if (longitude !== undefined && latitude !== undefined) {
+      userData.location = {
+        type: "Point",
+        coordinates: [Number(longitude), Number(latitude)],
+      };
+    }
+
     // Create user (password hashed by pre-save hook)
-    const user = await User.create({ name, email, password });
+    const user = await User.create(userData);
+
+    if (!user) {
+      throw new Error("User was not created");
+    }
 
     // Generate token
     const token = generateToken(user._id);
@@ -40,7 +53,8 @@ const signup = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role,
+        role: user.role || "user",
+        location: user.location,
       },
       token,
     });
