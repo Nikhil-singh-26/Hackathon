@@ -101,8 +101,12 @@ export default function SignupPage() {
     setServerError('');
     setIsLoading(true);
 
-    if (selectedRole === 'vendor' && !coordinates) {
-      setServerError('Vendors must provide their physical location to be paired with local organizers.');
+    if ((selectedRole === 'vendor' || selectedRole === 'organizer') && !coordinates) {
+      setServerError(
+        selectedRole === 'vendor'
+          ? 'Vendors must provide their physical location to be paired with local organizers.'
+          : 'Organizers must provide their physical location to discover local vendors.'
+      );
       setIsLoading(false);
       return;
     }
@@ -207,14 +211,18 @@ export default function SignupPage() {
           validateEmail
         />
 
-        {selectedRole === 'vendor' && (
+        {(selectedRole === 'vendor' || selectedRole === 'organizer') && (
           <div style={{ marginBottom: 20, padding: '16px', background: 'rgba(212, 175, 55, 0.05)', border: '1px solid rgba(212, 175, 55, 0.2)', borderRadius: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
               <MapPin size={18} color="var(--color-primary)" />
-              <label className="auth-label" style={{ margin: 0, fontWeight: 600, color: 'var(--color-text-main)' }}>Vendor Headquarters Location</label>
+              <label className="auth-label" style={{ margin: 0, fontWeight: 600, color: 'var(--color-text-main)' }}>
+                {selectedRole === 'vendor' ? 'Vendor Headquarters Location' : 'Organizer Hub Location'}
+              </label>
             </div>
             <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginBottom: 12, lineHeight: 1.4 }}>
-              To help event organizers find your services, we require vendors to share their current location. Local organizers within a 5km radius will see your listing.
+              {selectedRole === 'vendor'
+                ? 'To help event organizers find your services, we require vendors to share their current location. Local organizers within a 5km radius will see your listing.'
+                : 'To help us connect you with the best local vendors, we require organizers to share their primary event hub location.'}
             </p>
             <button
               type="button"

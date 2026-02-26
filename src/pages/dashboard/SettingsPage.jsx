@@ -126,13 +126,15 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  {user?.role === 'vendor' && (
+                  {(user?.role === 'vendor' || user?.role === 'organizer') && (
                     <div className="os-form-group mt-6 p-4 border border-glass bg-surface-dark rounded-lg">
                       <h4 className="font-semibold mb-2 flex items-center gap-2 text-sm">
-                        <MapPin size={18} className="text-primary" /> Business Location
+                        <MapPin size={18} className="text-primary" /> {user?.role === 'vendor' ? 'Business Location' : 'Organizer Hub Location'}
                       </h4>
                       <p className="text-sm text-muted mb-4 leading-relaxed">
-                        Update your physical headquarters so local organizers within 5km can easily discover your services.
+                        {user?.role === 'vendor'
+                          ? 'Update your physical headquarters so local organizers within 5km can easily discover your services.'
+                          : 'Update your central event hub location to discover the best local vendors within a 5km radius.'}
                       </p>
                       <button
                         type="button"
