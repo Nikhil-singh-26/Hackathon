@@ -5,7 +5,7 @@ const User = require("../models/User");
 // ============================================================
 const getNearbyUsers = async (req, res) => {
   try {
-    const { lat, lng, radius } = req.query;
+    const { lat, lng, radius, role } = req.query;
 
     if (!lat || !lng) {
       return res.status(400).json({ message: "Latitude and longitude are required" });
@@ -15,7 +15,7 @@ const getNearbyUsers = async (req, res) => {
     const radiusInKm = parseFloat(radius) || 10;
     const radiusInMeters = radiusInKm * 1000;
 
-    const users = await User.find({
+    const query = {
       location: {
         $near: {
           $geometry: {
@@ -25,7 +25,13 @@ const getNearbyUsers = async (req, res) => {
           $maxDistance: radiusInMeters,
         },
       },
-    });
+    };
+
+    if (role) {
+      query.role = role;
+    }
+
+    const users = await User.find(query);
 
     res.status(200).json({
       count: users.length,

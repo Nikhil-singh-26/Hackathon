@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertCircle, ArrowRight } from 'lucide-react';
+import { AlertCircle, ArrowRight, MapPin } from 'lucide-react';
 
 import AuthLayout from '../../components/auth/AuthLayout';
 import FloatingInput from '../../components/auth/FloatingInput';
@@ -59,6 +59,9 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  // Geolocation state for vendors
+  const [locationStatus, setLocationStatus] = useState('idle'); // idle, loading, success, error
+  const [coordinates, setCoordinates] = useState(null); // { lat, lng }
   const {
     register,
     handleSubmit,
@@ -72,11 +75,46 @@ export default function SignupPage() {
   const passwordValue = watch('password');
   const selectedRole = watch('role');
 
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationStatus('error');
+      return;
+    }
+    setLocationStatus('loading');
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCoordinates({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setLocationStatus('success');
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+        setLocationStatus('error');
+      },
+      { enableHighAccuracy: true }
+    );
+  };
+
   const onSubmit = async (data) => {
     setServerError('');
     setIsLoading(true);
+
+    if (selectedRole === 'vendor' && !coordinates) {
+      setServerError('Vendors must provide their physical location to be paired with local organizers.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      await signup({ role: data.role, name: data.name, email: data.email, password: data.password });
+      await signup({
+        role: data.role,
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        ...(coordinates && { longitude: coordinates.lng, latitude: coordinates.lat })
+      });
       setIsSuccess(true);
       setTimeout(() => navigate('/dashboard', { replace: true }), 800);
     } catch (err) {
@@ -168,6 +206,44 @@ export default function SignupPage() {
           error={errors.email?.message}
           validateEmail
         />
+
+        {selectedRole === 'vendor' && (
+          <div style={{ marginBottom: 20, padding: '16px', background: 'rgba(212, 175, 55, 0.05)', border: '1px solid rgba(212, 175, 55, 0.2)', borderRadius: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+              <MapPin size={18} color="var(--color-primary)" />
+              <label className="auth-label" style={{ margin: 0, fontWeight: 600, color: 'var(--color-text-main)' }}>Vendor Headquarters Location</label>
+            </div>
+            <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', marginBottom: 12, lineHeight: 1.4 }}>
+              To help event organizers find your services, we require vendors to share their current location. Local organizers within a 5km radius will see your listing.
+            </p>
+            <button
+              type="button"
+              onClick={handleGetLocation}
+              disabled={locationStatus === 'success' || locationStatus === 'loading'}
+              style={{
+                width: '100%',
+                padding: '10px 16px',
+                background: locationStatus === 'success' ? 'rgba(34, 197, 94, 0.1)' : 'transparent',
+                border: `1px solid ${locationStatus === 'success' ? '#22c55e' : 'var(--glass-border)'}`,
+                color: locationStatus === 'success' ? '#22c55e' : 'var(--color-text-main)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                cursor: (locationStatus === 'success' || locationStatus === 'loading') ? 'not-allowed' : 'pointer',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {locationStatus === 'idle' && 'Share Built-in GPS Location'}
+              {locationStatus === 'loading' && 'Acquiring GPS Signal...'}
+              {locationStatus === 'success' && '✓ Location Verified'}
+              {locationStatus === 'error' && '✗ Error Grabbing GPS - Try Again'}
+            </button>
+          </div>
+        )}
 
         <PasswordInput
           label="Password"
