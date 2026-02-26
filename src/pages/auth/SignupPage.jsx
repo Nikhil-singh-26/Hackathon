@@ -14,6 +14,9 @@ import { useAuth } from '../../hooks/useAuth';
 
 const signupSchema = z
   .object({
+    role: z.enum(['user', 'organizer', 'vendor'], {
+      required_error: 'Please select an account type',
+    }),
     name: z
       .string()
       .min(1, 'Full name is required')
@@ -63,16 +66,17 @@ export default function SignupPage() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(signupSchema),
-    defaultValues: { name: '', email: '', password: '', confirmPassword: '', terms: false },
+    defaultValues: { role: 'user', name: '', email: '', password: '', confirmPassword: '', terms: false },
   });
 
   const passwordValue = watch('password');
+  const selectedRole = watch('role');
 
   const onSubmit = async (data) => {
     setServerError('');
     setIsLoading(true);
     try {
-      await signup({ name: data.name, email: data.email, password: data.password });
+      await signup({ role: data.role, name: data.name, email: data.email, password: data.password });
       setIsSuccess(true);
       setTimeout(() => navigate('/dashboard', { replace: true }), 800);
     } catch (err) {
@@ -97,6 +101,59 @@ export default function SignupPage() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        {/* Role Selection */}
+        <div style={{ marginBottom: 24 }}>
+          <label className="auth-label" style={{ marginBottom: 12, display: 'block', color: 'var(--color-text-main)', fontSize: '0.9rem', fontWeight: 600 }}>I am a:</label>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+
+            <label style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px',
+              border: `1px solid ${selectedRole === 'user' ? 'var(--color-primary)' : 'var(--glass-border)'}`,
+              background: selectedRole === 'user' ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
+              borderRadius: '8px', cursor: 'pointer', transition: 'all 0.2s ease',
+              color: selectedRole === 'user' ? 'var(--color-primary)' : 'var(--color-text-muted)',
+              fontWeight: selectedRole === 'user' ? 600 : 500,
+              fontSize: '0.85rem'
+            }}>
+              <input type="radio" value="user" {...register('role')} style={{ display: 'none' }} />
+              User
+            </label>
+
+            <label style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px',
+              border: `1px solid ${selectedRole === 'organizer' ? 'var(--color-primary)' : 'var(--glass-border)'}`,
+              background: selectedRole === 'organizer' ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
+              borderRadius: '8px', cursor: 'pointer', transition: 'all 0.2s ease',
+              color: selectedRole === 'organizer' ? 'var(--color-primary)' : 'var(--color-text-muted)',
+              fontWeight: selectedRole === 'organizer' ? 600 : 500,
+              fontSize: '0.85rem'
+            }}>
+              <input type="radio" value="organizer" {...register('role')} style={{ display: 'none' }} />
+              Organizer
+            </label>
+
+            <label style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px',
+              border: `1px solid ${selectedRole === 'vendor' ? 'var(--color-primary)' : 'var(--glass-border)'}`,
+              background: selectedRole === 'vendor' ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
+              borderRadius: '8px', cursor: 'pointer', transition: 'all 0.2s ease',
+              color: selectedRole === 'vendor' ? 'var(--color-primary)' : 'var(--color-text-muted)',
+              fontWeight: selectedRole === 'vendor' ? 600 : 500,
+              fontSize: '0.85rem'
+            }}>
+              <input type="radio" value="vendor" {...register('role')} style={{ display: 'none' }} />
+              Vendor
+            </label>
+
+          </div>
+          {errors.role && (
+            <div className="field-error" style={{ marginTop: 8 }}>
+              <AlertCircle size={14} />
+              <span>{errors.role.message}</span>
+            </div>
+          )}
+        </div>
+
         <FloatingInput
           label="Full name"
           type="text"

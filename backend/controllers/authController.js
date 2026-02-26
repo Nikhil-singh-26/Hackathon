@@ -15,7 +15,7 @@ const generateToken = (userId) => {
 // ============================================================
 const signup = async (req, res) => {
   try {
-    const { name, email, password, longitude, latitude } = req.body;
+    const { name, email, password, role, longitude, latitude } = req.body;
 
     // Validate required fields
     if (!name || !email || !password) {
@@ -34,8 +34,12 @@ const signup = async (req, res) => {
       return res.status(409).json({ message: "Email already registered" });
     }
 
+    // Ensure role validation (fallback to 'user')
+    const validRoles = ["user", "vendor", "organizer", "admin"];
+    const assignedRole = validRoles.includes(role) ? role : "user";
+
     // Prepare user data
-    const userData = { name, email, password };
+    const userData = { name, email, password, role: assignedRole };
     if (longitude !== undefined && latitude !== undefined) {
       userData.location = {
         type: "Point",
