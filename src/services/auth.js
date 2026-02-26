@@ -112,49 +112,18 @@ const MOCK_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mock-jwt-token';
  * Login with email and password
  */
 export const loginUser = async (credentials) => {
-  // --- MOCK (replace with real API call) ---
-  await delay(1500);
-  if (
-    credentials.email === 'nikhil@eventflex.com' &&
-    credentials.password === 'Password@123'
-  ) {
-    setAccessToken(MOCK_TOKEN);
-    return { user: MOCK_USER, accessToken: MOCK_TOKEN };
-  }
-  // Accept any valid-looking credentials for demo purposes
-  if (credentials.email && credentials.password) {
-    const mockUser = {
-      ...MOCK_USER,
-      email: credentials.email,
-      name: credentials.email.split('@')[0],
-    };
-    setAccessToken(MOCK_TOKEN);
-    return { user: mockUser, accessToken: MOCK_TOKEN };
-  }
-  throw { response: { data: { message: 'Invalid email or password' } } };
-  // --- REAL ---
-  // const { data } = await api.post('/auth/login', credentials);
-  // setAccessToken(data.accessToken);
-  // return data;
+  const { data } = await api.post('/auth/login', credentials);
+  setAccessToken(data.token);
+  return data;
 };
 
 /**
  * Register a new account
  */
 export const signupUser = async (userData) => {
-  await delay(1500);
-  const mockUser = {
-    id: '2',
-    name: userData.name,
-    email: userData.email,
-    avatar: null,
-  };
-  setAccessToken(MOCK_TOKEN);
-  return { user: mockUser, accessToken: MOCK_TOKEN };
-  // --- REAL ---
-  // const { data } = await api.post('/auth/signup', userData);
-  // setAccessToken(data.accessToken);
-  // return data;
+  const { data } = await api.post('/auth/signup', userData);
+  setAccessToken(data.token);
+  return data;
 };
 
 /**
@@ -183,11 +152,13 @@ export const resetPassword = async (token, newPassword) => {
  * Logout current user
  */
 export const logoutUser = async () => {
-  clearAccessToken();
-  return { message: 'Logged out successfully' };
-  // --- REAL ---
-  // await api.post('/auth/logout');
-  // clearAccessToken();
+  try {
+    await api.post('/auth/logout');
+  } catch (e) {
+    console.error('Logout error:', e);
+  } finally {
+    clearAccessToken();
+  }
 };
 
 /**
@@ -196,11 +167,8 @@ export const logoutUser = async () => {
 export const getCurrentUser = async () => {
   const token = getAccessToken();
   if (!token) return null;
-  await delay(300);
-  return MOCK_USER;
-  // --- REAL ---
-  // const { data } = await api.get('/auth/me');
-  // return data.user;
+  const { data } = await api.get('/auth/me');
+  return data.user;
 };
 
 export default api;
