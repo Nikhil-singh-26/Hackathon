@@ -1,4 +1,5 @@
 import { ArrowRight, Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import './Hero.css';
 
 export default function Hero() {
@@ -16,9 +17,9 @@ export default function Hero() {
                         Find verified vendors, manage bookings, and track your budget — all in one intelligent platform.
                     </p>
                     <div className="hero-actions">
-                        <button className="solid-btn hero-btn flex items-center justify-center gap-2">
+                        <Link to="/dashboard" className="solid-btn hero-btn flex items-center justify-center gap-2">
                             Explore Vendors <ArrowRight size={20} />
-                        </button>
+                        </Link>
                         <button className="glass-btn hero-btn">
                             Create Event
                         </button>

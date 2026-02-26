@@ -15,21 +15,21 @@ export default function Contact() {
                                 <div className="info-icon"><Mail size={20} /></div>
                                 <div>
                                     <h4>Email Us</h4>
-                                    <p>hello@eventflex.com</p>
+                                    <p>prathmeshdandekar@gmail.com</p>
                                 </div>
                             </div>
                             <div className="info-item flex items-center gap-4">
                                 <div className="info-icon"><Phone size={20} /></div>
                                 <div>
                                     <h4>Call Us</h4>
-                                    <p>+91 98765 43210</p>
+                                    <p>+91 94079 35884</p>
                                 </div>
                             </div>
                             <div className="info-item flex items-center gap-4">
                                 <div className="info-icon"><MapPin size={20} /></div>
                                 <div>
                                     <h4>Visit Us</h4>
-                                    <p>123 Startup Ave, Tech Park<br />Bengaluru, 560001</p>
+                                    <p>Gandhi nagar SUAS<br />Indore, 493221</p>
                                 </div>
                             </div>
                         </div>
@@ -39,11 +39,11 @@ export default function Contact() {
                         <form className="contact-form">
                             <div className="form-group">
                                 <label>Full Name</label>
-                                <input type="text" placeholder="John Doe" className="glass-input" />
+                                <input type="text" placeholder="Awanish Kumar Upadhyay" className="glass-input" />
                             </div>
                             <div className="form-group">
                                 <label>Email Address</label>
-                                <input type="email" placeholder="john@example.com" className="glass-input" />
+                                <input type="email" placeholder="aku@gmail.com" className="glass-input" />
                             </div>
                             <div className="form-group">
                                 <label>Message</label>

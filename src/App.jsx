@@ -14,7 +14,13 @@ import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';
-import DashboardPage from './pages/DashboardPage';
+
+import DashboardLayout from './pages/dashboard/DashboardLayout';
+import OverviewPage from './pages/dashboard/OverviewPage';
+import EventsPage from './pages/dashboard/EventsPage';
+import AnalyticsPage from './pages/dashboard/AnalyticsPage';
+import SettingsPage from './pages/dashboard/SettingsPage';
+
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
 import './App.css';
@@ -49,16 +55,20 @@ function App() {
       <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
-      {/* Protected routes */}
+      {/* Protected dashboard with nested routes */}
       <Route
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <Navbar />
-            <DashboardPage />
+            <DashboardLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<OverviewPage />} />
+        <Route path="events" element={<EventsPage />} />
+        <Route path="analytics" element={<AnalyticsPage />} />
+        <Route path="settings" element={<SettingsPage />} />
+      </Route>
     </Routes>
   );
 }
