@@ -131,10 +131,21 @@
   overflow: hidden;
 }
 
+[data-theme='dark'] .os-stat-card {
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+}
+
 .os-stat-card:hover {
   transform: translateY(-4px);
   border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
   box-shadow: 0 8px 30px color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+[data-theme='dark'] .os-stat-card:hover {
+  border-color: rgba(212, 175, 55, 0.3);
+  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.1);
 }
 
 .os-stat-card-header {
@@ -191,6 +202,12 @@
   transition: all 0.3s ease;
 }
 
+[data-theme='dark'] .os-panel {
+  background: rgba(30, 30, 30, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+}
+
 .os-panel-title {
   font-family: var(--font-heading);
   font-size: 1.25rem;
@@ -217,6 +234,11 @@
   justify-content: center;
   color: var(--color-text-muted);
   font-size: 0.9rem;
+}
+
+[data-theme='dark'] .os-chart-placeholder {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px dashed rgba(212, 175, 55, 0.3);
 }
 
 /* ======================== RECENT ACTIVITY ======================== */
@@ -274,6 +296,10 @@
 .os-activity-info span {
   font-size: 0.75rem;
   color: var(--color-text-muted);
+}
+
+[data-theme='dark'] .os-activity-info span {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .os-activity-amount {
