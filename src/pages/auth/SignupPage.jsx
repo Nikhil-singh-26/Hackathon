@@ -30,6 +30,11 @@ const signupSchema = z
         },
         { message: 'Please use a trusted email provider (e.g. Gmail, Outlook, Yahoo)' }
       ),
+    role: z.enum(['organizer', 'vendor'], {
+      errorMap: () => ({ message: 'Please select a role' }),
+    }),
+    businessName: z.string().optional(),
+    phone: z.string().optional(),
     password: z
       .string()
       .min(1, 'Password is required')
@@ -46,6 +51,15 @@ const signupSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
+  })
+  .refine((data) => {
+    if (data.role === 'vendor' && (!data.businessName || data.businessName.trim() === '')) {
+      return false;
+    }
+    return true;
+  }, {
+    message: 'Business name is required for vendors',
+    path: ['businessName'],
   });
 
 export default function SignupPage() {
@@ -72,7 +86,14 @@ export default function SignupPage() {
     setServerError('');
     setIsLoading(true);
     try {
-      await signup({ name: data.name, email: data.email, password: data.password });
+      await signup({ 
+        name: data.name, 
+        email: data.email, 
+        password: data.password,
+        role: data.role,
+        businessName: data.businessName,
+        phone: data.phone
+      });
       setIsSuccess(true);
       setTimeout(() => navigate('/dashboard', { replace: true }), 800);
     } catch (err) {
@@ -83,6 +104,8 @@ export default function SignupPage() {
       setIsLoading(false);
     }
   };
+
+  const selectedRole = watch('role');
 
   return (
     <AuthLayout
@@ -97,12 +120,54 @@ export default function SignupPage() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        {/* Role Selection */}
+        <div className="role-selection-grid grid grid-cols-2 gap-4 mb-6">
+          <button
+            type="button"
+            className={`role-card ${selectedRole === 'organizer' ? 'active' : ''}`}
+            onClick={() => register('role').onChange({ target: { value: 'organizer', name: 'role' } })}
+          >
+            <div className="role-icon">🎟️</div>
+            <div className="role-info">
+              <span className="role-title">Organizer</span>
+              <span className="role-desc">I want to book events</span>
+            </div>
+          </button>
+          <button
+            type="button"
+            className={`role-card ${selectedRole === 'vendor' ? 'active' : ''}`}
+            onClick={() => register('role').onChange({ target: { value: 'vendor', name: 'role' } })}
+          >
+            <div className="role-icon">🏪</div>
+            <div className="role-info">
+              <span className="role-title">Vendor</span>
+              <span className="role-desc">I want to provide services</span>
+            </div>
+          </button>
+        </div>
+        <input type="hidden" {...register('role')} />
+        {errors.role && (
+          <div className="field-error" style={{ marginTop: -16, marginBottom: 16 }}>
+            <AlertCircle size={14} />
+            <span>{errors.role.message}</span>
+          </div>
+        )}
+
         <FloatingInput
           label="Full name"
           type="text"
           registration={register('name')}
           error={errors.name?.message}
         />
+
+        {selectedRole === 'vendor' && (
+          <FloatingInput
+            label="Business name"
+            type="text"
+            registration={register('businessName')}
+            error={errors.businessName?.message}
+          />
+        )}
 
         <FloatingInput
           label="Email address"

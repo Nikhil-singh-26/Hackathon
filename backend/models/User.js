@@ -19,8 +19,30 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["user", "organizer", "admin"],
-      default: "user",
+      enum: ["user", "organizer", "vendor", "admin"],
+      default: "organizer",
+    },
+    // Vendor specific fields
+    businessName: {
+      type: String,
+      trim: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+    phone: {
+      type: String,
+      trim: true,
+    },
+    isLocationSharing: {
+      type: Boolean,
+      default: false,
+    },
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
     },
     location: {
       type: {
