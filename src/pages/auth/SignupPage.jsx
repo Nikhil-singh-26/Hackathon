@@ -1,0 +1,157 @@
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Link, useNavigate } from 'react-router-dom';
+import { AlertCircle, ArrowRight } from 'lucide-react';
+
+import AuthLayout from '../../components/auth/AuthLayout';
+import FloatingInput from '../../components/auth/FloatingInput';
+import PasswordInput from '../../components/auth/PasswordInput';
+import PasswordStrengthMeter from '../../components/auth/PasswordStrengthMeter';
+import SubmitButton from '../../components/auth/SubmitButton';
+import { useAuth } from '../../hooks/useAuth';
+
+const signupSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, 'Full name is required')
+      .min(2, 'Name must be at least 2 characters'),
+    email: z
+      .string()
+      .min(1, 'Email is required')
+      .email('Please enter a valid email address'),
+    password: z
+      .string()
+      .min(1, 'Password is required')
+      .min(8, 'Password must be at least 8 characters')
+      .regex(/[A-Z]/, 'Must contain an uppercase letter')
+      .regex(/[a-z]/, 'Must contain a lowercase letter')
+      .regex(/[0-9]/, 'Must contain a number')
+      .regex(/[^A-Za-z0-9]/, 'Must contain a special character'),
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+    terms: z.literal(true, {
+      errorMap: () => ({ message: 'You must accept the terms' }),
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
+export default function SignupPage() {
+  const navigate = useNavigate();
+  const { signup } = useAuth();
+
+  const [serverError, setServerError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(signupSchema),
+    defaultValues: { name: '', email: '', password: '', confirmPassword: '', terms: false },
+  });
+
+  const passwordValue = watch('password');
+
+  const onSubmit = async (data) => {
+    setServerError('');
+    setIsLoading(true);
+    try {
+      await signup({ name: data.name, email: data.email, password: data.password });
+      setIsSuccess(true);
+      setTimeout(() => navigate('/dashboard', { replace: true }), 800);
+    } catch (err) {
+      setServerError(
+        err?.response?.data?.message || 'Signup failed. Please try again.',
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <AuthLayout
+      heading="Create account"
+      subtitle="Join EventFlex and start your journey"
+    >
+      {serverError && (
+        <div className="form-error-banner">
+          <AlertCircle size={18} />
+          <span>{serverError}</span>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <FloatingInput
+          label="Full name"
+          type="text"
+          registration={register('name')}
+          error={errors.name?.message}
+        />
+
+        <FloatingInput
+          label="Email address"
+          type="email"
+          registration={register('email')}
+          error={errors.email?.message}
+          validateEmail
+        />
+
+        <PasswordInput
+          label="Password"
+          registration={register('password')}
+          error={errors.password?.message}
+          autoComplete="new-password"
+        />
+
+        <PasswordStrengthMeter password={passwordValue} />
+
+        <PasswordInput
+          label="Confirm password"
+          registration={register('confirmPassword')}
+          error={errors.confirmPassword?.message}
+          autoComplete="new-password"
+        />
+
+        <label className="auth-checkbox-label" style={{ marginTop: 12, marginBottom: 20 }}>
+          <input
+            type="checkbox"
+            className="auth-checkbox"
+            {...register('terms')}
+          />
+          <span>
+            I agree to the{' '}
+            <span className="auth-link" tabIndex={0}>Terms of Service</span>
+            {' '}and{' '}
+            <span className="auth-link" tabIndex={0}>Privacy Policy</span>
+          </span>
+        </label>
+        {errors.terms && (
+          <div className="field-error" style={{ marginTop: -12, marginBottom: 16 }}>
+            <AlertCircle size={14} />
+            <span>{errors.terms.message}</span>
+          </div>
+        )}
+
+        <SubmitButton isLoading={isLoading} isSuccess={isSuccess}>
+          <span>Create Account</span>
+          <ArrowRight size={18} />
+        </SubmitButton>
+      </form>
+
+      <p className="auth-footer-text">
+        Already have an account?{' '}
+        <Link to="/auth/login" className="auth-link">
+          Sign in
+        </Link>
+      </p>
+    </AuthLayout>
+  );
+}
