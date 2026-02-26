@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { User, Bell, Lock, Shield, Mail, Smartphone } from 'lucide-react';
+import { User, Bell, Lock, Shield, Mail, Smartphone, MapPin, Loader2 } from 'lucide-react';
+import { updateUserLocation } from '../../services/auth';
 
 export default function SettingsPage() {
   const { user } = useAuth();
@@ -15,6 +16,35 @@ export default function SettingsPage() {
 
   const [saved, setSaved] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
+  const [locationStatus, setLocationStatus] = useState('idle');
+
+  const handleUpdateLocation = async () => {
+    if (!navigator.geolocation) {
+      setLocationStatus('error');
+      return;
+    }
+    setLocationStatus('loading');
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          await updateUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+          setLocationStatus('success');
+          setTimeout(() => setLocationStatus('idle'), 3000);
+        } catch (error) {
+          console.error('Update location error:', error);
+          setLocationStatus('error');
+        }
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+        setLocationStatus('error');
+      },
+      { enableHighAccuracy: true }
+    );
+  };
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -96,7 +126,35 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <button type="submit" className="os-save-btn mt-4">
+                  {user?.role === 'vendor' && (
+                    <div className="os-form-group mt-6 p-4 border border-glass bg-surface-dark rounded-lg">
+                      <h4 className="font-semibold mb-2 flex items-center gap-2 text-sm">
+                        <MapPin size={18} className="text-primary" /> Business Location
+                      </h4>
+                      <p className="text-sm text-muted mb-4 leading-relaxed">
+                        Update your physical headquarters so local organizers within 5km can easily discover your services.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleUpdateLocation}
+                        disabled={locationStatus === 'loading'}
+                        className="glass-btn w-full flex justify-center items-center gap-2"
+                        style={{
+                          background: locationStatus === 'success' ? 'rgba(34, 197, 94, 0.1)' : '',
+                          borderColor: locationStatus === 'success' ? '#22c55e' : '',
+                          color: locationStatus === 'success' ? '#22c55e' : ''
+                        }}
+                      >
+                        {locationStatus === 'loading' ? <Loader2 className="spin" size={16} /> : <MapPin size={16} />}
+                        {locationStatus === 'idle' && 'Update GPS Location'}
+                        {locationStatus === 'loading' && 'Acquiring GPS Signal...'}
+                        {locationStatus === 'success' && '✓ Location Updated!'}
+                        {locationStatus === 'error' && '✗ Error Grabbing GPS - Try Again'}
+                      </button>
+                    </div>
+                  )}
+
+                  <button type="submit" className="os-save-btn mt-6">
                     {saved ? '✓ Saved!' : 'Save Changes'}
                   </button>
                 </form>
