@@ -53,6 +53,11 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Do not intercept 401 errors from login or signup endpoints
+    if (originalRequest.url.includes('/auth/login') || originalRequest.url.includes('/auth/signup')) {
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
