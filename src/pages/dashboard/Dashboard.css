@@ -1,5 +1,5 @@
 /* ============================================================
-   EventFlex OS — Dashboard System Styles
+   EventFlex — Dashboard System Styles
    Dark themed admin panel with sidebar navigation
    ============================================================ */
 
@@ -7,8 +7,8 @@
 .os-layout {
   display: flex;
   min-height: 100vh;
-  background: #0a0a0a;
-  color: #fff;
+  background: var(--bg-gradient);
+  color: var(--color-text-main);
   font-family: var(--font-body);
 }
 
@@ -16,8 +16,8 @@
 .os-sidebar {
   width: 200px;
   min-height: 100vh;
-  background: #0f0f0f;
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--color-light-bg);
+  border-right: var(--glass-border);
   padding: 28px 16px;
   display: flex;
   flex-direction: column;
@@ -32,7 +32,7 @@
   font-family: var(--font-heading);
   font-size: 1.15rem;
   font-weight: 700;
-  color: #c084fc;
+  color: var(--color-accent);
   margin-bottom: 28px;
   padding: 0 8px;
   letter-spacing: -0.01em;
@@ -46,7 +46,7 @@
   border-radius: 10px;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #a1a1aa;
+  color: var(--color-text-muted);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -58,15 +58,15 @@
 }
 
 .os-nav-item:hover {
-  color: #fff;
+  color: var(--color-text-main);
   background: rgba(255, 255, 255, 0.04);
 }
 
 .os-nav-item.active {
-  color: #fff;
-  background: linear-gradient(135deg, #c026d3, #e879f9);
+  color: var(--color-text-main);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   font-weight: 600;
-  box-shadow: 0 4px 16px rgba(192, 38, 211, 0.25);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--color-primary) 25%, transparent);
 }
 
 /* ======================== MAIN PANEL ======================== */
@@ -74,7 +74,7 @@
   flex: 1;
   margin-left: 200px;
   min-height: 100vh;
-  background: #0a0a0a;
+  background: var(--bg-gradient);
 }
 
 .os-topbar {
@@ -82,14 +82,14 @@
   align-items: center;
   justify-content: flex-end;
   padding: 18px 32px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: var(--glass-border);
 }
 
 .os-topbar-avatar {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -106,7 +106,7 @@
   font-family: var(--font-heading);
   font-size: 1.75rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--color-text-main);
   margin-bottom: 28px;
 }
 
@@ -119,8 +119,8 @@
 }
 
 .os-stat-card {
-  background: #111;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--color-light-bg);
+  border: var(--glass-border);
   border-radius: 14px;
   padding: 20px;
   position: relative;
@@ -128,8 +128,8 @@
 }
 
 .os-stat-card:hover {
-  border-color: rgba(192, 38, 211, 0.2);
-  box-shadow: 0 4px 20px rgba(192, 38, 211, 0.06);
+  border-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--color-primary) 6%, transparent);
 }
 
 .os-stat-card-header {
@@ -142,11 +142,11 @@
 .os-stat-card-header h4 {
   font-size: 0.82rem;
   font-weight: 500;
-  color: #a1a1aa;
+  color: var(--color-text-muted);
 }
 
 .os-stat-card-header .os-stat-icon {
-  color: #71717a;
+  color: var(--color-text-muted);
   opacity: 0.6;
 }
 
@@ -154,7 +154,7 @@
   font-family: var(--font-heading);
   font-size: 1.65rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--color-text-main);
   margin-bottom: 4px;
 }
 
@@ -176,8 +176,8 @@
 }
 
 .os-panel {
-  background: #111;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--color-light-bg);
+  border: var(--glass-border);
   border-radius: 14px;
   padding: 24px;
 }
@@ -186,13 +186,13 @@
   font-family: var(--font-heading);
   font-size: 1.05rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-text-main);
   margin-bottom: 6px;
 }
 
 .os-panel-subtitle {
   font-size: 0.82rem;
-  color: #71717a;
+  color: var(--color-text-muted);
   margin-bottom: 20px;
 }
 
@@ -200,13 +200,13 @@
 .os-chart-placeholder {
   width: 100%;
   height: 200px;
-  background: #0a0a0a;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--bg-gradient);
+  border: var(--glass-border);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #52525b;
+  color: var(--color-text-muted);
   font-size: 0.88rem;
 }
 
@@ -222,12 +222,12 @@
   font-family: var(--font-heading);
   font-size: 1.05rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-text-main);
 }
 
 .os-activity-header p {
   font-size: 0.78rem;
-  color: #71717a;
+  color: var(--color-text-muted);
 }
 
 .os-activity-list {
@@ -246,7 +246,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
   flex-shrink: 0;
   opacity: 0.7;
 }
@@ -259,18 +259,18 @@
   display: block;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #e4e4e7;
+  color: var(--color-text-main);
 }
 
 .os-activity-info span {
   font-size: 0.75rem;
-  color: #71717a;
+  color: var(--color-text-muted);
 }
 
 .os-activity-amount {
   font-size: 0.88rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-text-main);
   white-space: nowrap;
 }
 
@@ -291,8 +291,8 @@
   font-size: 0.88rem;
   font-weight: 600;
   font-family: var(--font-body);
-  background: linear-gradient(135deg, #7c3aed, #a78bfa);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: var(--color-text-main);
   border: none;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -300,19 +300,19 @@
 
 .os-create-event-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.35);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--color-primary) 35%, transparent);
 }
 
 .os-empty-state {
   width: 100%;
   height: 200px;
-  background: #0a0a0a;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: var(--bg-gradient);
+  border: var(--glass-border);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #52525b;
+  color: var(--color-text-muted);
   font-size: 0.88rem;
 }
 
@@ -325,13 +325,13 @@
   font-family: var(--font-heading);
   font-size: 1rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-text-main);
   margin-bottom: 4px;
 }
 
 .os-settings-section p {
   font-size: 0.82rem;
-  color: #71717a;
+  color: var(--color-text-muted);
   margin-bottom: 20px;
 }
 
@@ -343,7 +343,7 @@
   display: block;
   font-size: 0.82rem;
   font-weight: 600;
-  color: #e4e4e7;
+  color: var(--color-text-main);
   margin-bottom: 6px;
 }
 
@@ -353,20 +353,20 @@
   padding: 10px 14px;
   font-size: 0.9rem;
   font-family: var(--font-body);
-  background: #0a0a0a;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-gradient);
+  border: var(--glass-border);
   border-radius: 8px;
-  color: #fff;
+  color: var(--color-text-main);
   outline: none;
   transition: border-color 0.2s ease;
 }
 
 .os-form-input:focus {
-  border-color: rgba(124, 58, 237, 0.5);
+  border-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
 }
 
 .os-form-input::placeholder {
-  color: #52525b;
+  color: var(--color-text-muted);
 }
 
 .os-save-btn {
@@ -375,8 +375,8 @@
   font-size: 0.88rem;
   font-weight: 600;
   font-family: var(--font-body);
-  background: linear-gradient(135deg, #7c3aed, #a78bfa);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: var(--color-text-main);
   border: none;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -385,7 +385,7 @@
 
 .os-save-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.35);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--color-primary) 35%, transparent);
 }
 
 .os-danger-section {
@@ -402,7 +402,7 @@
 
 .os-danger-section p {
   font-size: 0.82rem;
-  color: #71717a;
+  color: var(--color-text-muted);
   margin-bottom: 16px;
 }
 

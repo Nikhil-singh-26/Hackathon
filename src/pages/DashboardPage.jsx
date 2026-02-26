@@ -12,7 +12,7 @@ import '../components/auth/Auth.css';
 const MOCK_STATS = [
   { label: 'Events Created', value: '12', icon: Calendar },
   { label: 'Total Attendees', value: '1,248', icon: Users },
-  { label: 'Revenue', value: '$8,420', icon: TrendingUp },
+  { label: 'Revenue', value: '₹8,420', icon: TrendingUp },
 ];
 
 export default function DashboardPage() {

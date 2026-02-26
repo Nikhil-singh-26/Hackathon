@@ -3,7 +3,7 @@ import { DollarSign, CalendarDays, Users, TrendingUp } from 'lucide-react';
 const STATS = [
   {
     label: 'Total Revenue',
-    value: '$45,231.89',
+    value: '₹45,231.89',
     change: '+20.1% from last month',
     icon: DollarSign,
   },
@@ -28,10 +28,10 @@ const STATS = [
 ];
 
 const RECENT_ACTIVITY = [
-  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+$1,999.00' },
-  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+$1,999.00' },
-  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+$1,999.00' },
-  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+$1,999.00' },
+  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+₹1,999.00' },
+  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+₹1,999.00' },
+  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+₹1,999.00' },
+  { name: 'Olivia Martin', email: 'olivia.martin@email.com', amount: '+₹1,999.00' },
 ];
 
 export default function OverviewPage() {

@@ -1,6 +1,6 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, CalendarDays, BarChart3, Settings } from 'lucide-react';
-import { useAuth } from '../../hooks/useAuth';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, CalendarDays, BarChart3, Settings, Moon, Sun } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import './Dashboard.css';
 
 const NAV_ITEMS = [
@@ -11,8 +11,17 @@ const NAV_ITEMS = [
 ];
 
 export default function DashboardLayout() {
-  const { logout } = useAuth();
   const navigate = useNavigate();
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
 
   const handleAvatarClick = () => {
     navigate('/dashboard/settings');
@@ -22,7 +31,9 @@ export default function DashboardLayout() {
     <div className="os-layout">
       {/* Sidebar */}
       <aside className="os-sidebar">
-        <div className="os-sidebar-logo">EventFlex OS</div>
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <div className="os-sidebar-logo">EventFlex</div>
+        </Link>
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.path}
@@ -40,7 +51,10 @@ export default function DashboardLayout() {
 
       {/* Main content */}
       <div className="os-main">
-        <div className="os-topbar">
+        <div className="os-topbar" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <button className="theme-toggle flex items-center justify-center" onClick={toggleTheme} style={{ background: 'transparent', border: 'none', color: 'var(--color-text-main)', cursor: 'pointer', padding: '8px', borderRadius: '50%', transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
+            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+          </button>
           <div
             className="os-topbar-avatar"
             onClick={handleAvatarClick}

@@ -20,9 +20,9 @@ export default function Hero() {
                         <Link to="/dashboard" className="solid-btn hero-btn flex items-center justify-center gap-2">
                             Explore Vendors <ArrowRight size={20} />
                         </Link>
-                        <button className="glass-btn hero-btn">
+                        <Link to="/dashboard/events" className="glass-btn hero-btn">
                             Create Event
-                        </button>
+                        </Link>
                     </div>
                 </div>
 
