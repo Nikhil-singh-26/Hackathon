@@ -7,7 +7,8 @@ import {
   MoreVertical, 
   Phone,
   User as UserIcon,
-  Smile
+  Smile,
+  MessageSquare
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import axios from 'axios';
