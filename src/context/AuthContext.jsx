@@ -5,6 +5,7 @@ import {
   logoutUser,
   getCurrentUser,
   clearAccessToken,
+  googleLoginUser,
 } from '../services/auth';
 
 export const AuthContext = createContext(null);
@@ -55,6 +56,13 @@ export function AuthProvider({ children }) {
     clearAccessToken();
   }, []);
 
+  const googleLogin = useCallback(async (idToken) => {
+    const data = await googleLoginUser(idToken);
+    setUser(data.user);
+    setIsAuthenticated(true);
+    return data;
+  }, []);
+
   const value = {
     user,
     isAuthenticated,
@@ -62,6 +70,7 @@ export function AuthProvider({ children }) {
     login,
     signup,
     logout,
+    googleLogin,
   };
 
   return (

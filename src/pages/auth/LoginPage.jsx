@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AlertCircle, ArrowRight } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
 
 import AuthLayout from '../../components/auth/AuthLayout';
 import FloatingInput from '../../components/auth/FloatingInput';
@@ -27,7 +28,7 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, googleLogin } = useAuth();
 
   const [serverError, setServerError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -58,6 +59,26 @@ export default function LoginPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setServerError('');
+    setIsLoading(true);
+    try {
+      await googleLogin(credentialResponse.credential);
+      setIsSuccess(true);
+      setTimeout(() => navigate(from, { replace: true }), 800);
+    } catch (err) {
+      setServerError(
+        err?.response?.data?.message || 'Google login failed. Please try again.',
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setServerError('Google login failed. Please try again.');
   };
 
   return (
@@ -102,6 +123,23 @@ export default function LoginPage() {
           <ArrowRight size={18} />
         </SubmitButton>
       </form>
+
+      <div style={{ display: 'flex', alignItems: 'center', margin: '24px 0', gap: 12 }}>
+        <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }}></div>
+        <span style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', fontWeight: 500 }}>OR</span>
+        <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }}></div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={handleGoogleError}
+          useOneTap
+          theme="outline"
+          shape="pill"
+          width="100%"
+        />
+      </div>
 
       <p className="auth-footer-text">
         Don&apos;t have an account?{' '}
