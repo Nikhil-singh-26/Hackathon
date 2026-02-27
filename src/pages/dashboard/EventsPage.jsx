@@ -140,7 +140,7 @@ export default function EventsPage() {
                     <span>Date: {ev.date}</span>
                   </div>
                   <div className="os-activity-amount" style={{ color: 'var(--color-accent)' }}>
-                    â‚¹{parseInt(ev.budget).toLocaleString('en-IN')}
+                    ₹{parseInt(ev.budget).toLocaleString('en-IN')}
                   </div>
                 </div>
               ))}

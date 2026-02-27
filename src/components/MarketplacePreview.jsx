@@ -145,7 +145,7 @@ export default function MarketplacePreview() {
                                     <div className="flex justify-between items-center mt-4">
                                         <div className="vendor-price">
                                             <span className="price-label">Starts at</span>
-                                            <p>{vendor.startingPrice || "â‚¹15,000"}</p>
+                                            <p>{vendor.startingPrice || "₹15,000"}</p>
                                         </div>
                                         <Link
                                             to={`/vendor/${vendor._id}`}

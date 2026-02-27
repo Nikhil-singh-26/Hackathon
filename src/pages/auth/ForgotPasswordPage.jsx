@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
       subtitle={
         isSuccess
           ? undefined
-          : "No worries â€” we'll send you reset instructions"
+          : "No worries — we'll send you reset instructions"
       }
     >
       {isSuccess ? (
