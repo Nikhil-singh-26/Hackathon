@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { AlertCircle, ArrowRight, MapPin, RefreshCw, CheckCircle2, Home } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 
 import AuthLayout from '../../components/auth/AuthLayout';
@@ -22,6 +23,11 @@ const signupSchema = z
       .string()
       .min(1, 'Full name is required')
       .min(2, 'Name must be at least 2 characters'),
+    username: z
+      .string()
+      .min(1, 'Username is required')
+      .min(3, 'Username must be at least 3 characters')
+      .regex(/^[a-zA-Z0-9_]+$/, 'Only letters, numbers and underscores allowed'),
     email: z
       .string()
       .min(1, 'Email is required')
@@ -65,7 +71,7 @@ const signupSchema = z
 
 export default function SignupPage() {
   const navigate = useNavigate();
-  const { signup } = useAuth();
+  const { signup, googleLogin } = useAuth();
 
   const [serverError, setServerError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -83,7 +89,7 @@ export default function SignupPage() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(signupSchema),
-    defaultValues: { role: 'user', name: '', email: '', password: '', confirmPassword: '', terms: false },
+    defaultValues: { role: 'user', name: '', username: '', email: '', password: '', confirmPassword: '', terms: false },
   });
 
   const passwordValue = watch('password');
@@ -152,6 +158,7 @@ export default function SignupPage() {
     try {
       await signup({
         name: data.name,
+        username: data.username,
         email: data.email,
         password: data.password,
         role: data.role,
@@ -170,6 +177,26 @@ export default function SignupPage() {
     }
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setServerError('');
+    setIsLoading(true);
+    try {
+      await googleLogin(credentialResponse.credential);
+      setIsSuccess(true);
+      setTimeout(() => navigate('/dashboard', { replace: true }), 800);
+    } catch (err) {
+      setServerError(
+        err?.response?.data?.message || 'Google registration failed. Please try again.',
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setServerError('Google registration failed. Please try again.');
+  };
+
   return (
     <AuthLayout
       heading="Create account"
@@ -183,7 +210,7 @@ export default function SignupPage() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        {}
+        { }
         <div style={{ marginBottom: 24 }}>
           <label className="auth-label" style={{ marginBottom: 12, display: 'block', color: 'var(--color-text-main)', fontSize: '0.9rem', fontWeight: 600 }}>I am a:</label>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -226,6 +253,13 @@ export default function SignupPage() {
           type="text"
           registration={register('name')}
           error={errors.name?.message}
+        />
+
+        <FloatingInput
+          label="Username"
+          type="text"
+          registration={register('username')}
+          error={errors.username?.message}
         />
 
         {selectedRole === 'vendor' && (
@@ -322,10 +356,10 @@ export default function SignupPage() {
             )}
 
             {locationStatus === 'error' && (
-               <div className="field-error" style={{ marginTop: 10 }}>
-                 <AlertCircle size={14} />
-                 <span>Location access is required for {selectedRole}s.</span>
-               </div>
+              <div className="field-error" style={{ marginTop: 10 }}>
+                <AlertCircle size={14} />
+                <span>Location access is required for {selectedRole}s.</span>
+              </div>
             )}
           </div>
         )}
@@ -354,9 +388,9 @@ export default function SignupPage() {
           />
           <span>
             I agree to the{' '}
-            <span className="auth-link" tabIndex={0}>Terms of Service</span>
+            <Link to="/legal/terms-of-service" className="auth-link" target="_blank" rel="noopener noreferrer">Terms of Service</Link>
             {' '}and{' '}
-            <span className="auth-link" tabIndex={0}>Privacy Policy</span>
+            <Link to="/legal/privacy-policy" className="auth-link" target="_blank" rel="noopener noreferrer">Privacy Policy</Link>
           </span>
         </label>
         {errors.terms && (
@@ -371,6 +405,23 @@ export default function SignupPage() {
           <ArrowRight size={18} />
         </SubmitButton>
       </form>
+
+      <div style={{ display: 'flex', alignItems: 'center', margin: '24px 0', gap: 12 }}>
+        <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }}></div>
+        <span style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', fontWeight: 500 }}>OR</span>
+        <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }}></div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={handleGoogleError}
+          useOneTap
+          theme="outline"
+          shape="pill"
+          width="100%"
+        />
+      </div>
 
       <p className="auth-footer-text">
         Already have an account?{' '}

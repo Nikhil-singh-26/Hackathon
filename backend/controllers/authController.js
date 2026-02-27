@@ -1,5 +1,9 @@
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const { OAuth2Client } = require("google-auth-library");
 const User = require("../models/User");
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 
 
@@ -17,6 +21,7 @@ const signup = async (req, res) => {
   try {
     const {
       name,
+      username,
       email,
       password,
       longitude,
@@ -28,7 +33,7 @@ const signup = async (req, res) => {
     } = req.body;
 
 
-    if (!name || !email || !password) {
+    if (!name || !username || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -47,6 +52,7 @@ const signup = async (req, res) => {
 
     const user = await User.create({
       name,
+      username,
       email,
       password,
       role: role || "organizer",
@@ -74,6 +80,7 @@ const signup = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        username: user.username,
         email: user.email,
         role: user.role || "user",
         location: user.location,
@@ -122,6 +129,7 @@ const login = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        username: user.username,
         email: user.email,
         role: user.role,
       },
@@ -147,6 +155,7 @@ const getMe = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        username: user.username,
         email: user.email,
         role: user.role,
       },
@@ -157,4 +166,121 @@ const getMe = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, getMe };
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "There is no user with that email" });
+    }
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    user.resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+    await user.save({ validateBeforeSave: false });
+
+    // In a real app, send email here. For now, we'll just return success.
+    // In dev mode, we might want to return the token for testing.
+    res.status(200).json({
+      message: "Token sent to email",
+      // For development purposes, returning the token
+      resetToken: process.env.NODE_ENV === "development" ? resetToken : undefined,
+    });
+  } catch (error) {
+    console.error("ForgotPassword error:", error);
+    res.status(500).json({ message: "Server error. Please try again later." });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(req.params.resetToken)
+      .digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    user.password = req.body.password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    const token = generateToken(user._id);
+
+    res.status(200).json({
+      message: "Password reset successful",
+      token,
+    });
+  } catch (error) {
+    console.error("ResetPassword error:", error);
+    res.status(500).json({ message: "Server error. Please try again later." });
+  }
+};
+
+const googleLogin = async (req, res) => {
+  try {
+    const { idToken } = req.body;
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const { name, email, sub: googleId, picture } = ticket.getPayload();
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // Create a user if they don't exist
+      // Since it's google login, we don't have a password. 
+      // We should probably generate a random one or make it optional in schema (but it's required now).
+      const generatedPassword = crypto.randomBytes(16).toString("hex");
+
+      // Generate a username from email if not provided
+      const username = email.split('@')[0] + Math.floor(Math.random() * 1000);
+
+      user = await User.create({
+        name,
+        username,
+        email,
+        password: generatedPassword,
+        role: "user",
+        location: {
+          type: "Point",
+          coordinates: [0, 0], // Default
+        },
+      });
+    }
+
+    const token = generateToken(user._id);
+
+    res.status(200).json({
+      message: "Google login successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+      token,
+    });
+  } catch (error) {
+    console.error("Google login error:", error);
+    res.status(500).json({ message: "Google login failed. Please try again." });
+  }
+};
+
+module.exports = { signup, login, getMe, forgotPassword, resetPassword, googleLogin };

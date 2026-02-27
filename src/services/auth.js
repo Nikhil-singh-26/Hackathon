@@ -114,14 +114,14 @@ export const loginUser = async (credentials) => {
 
 
 export const signupUser = async (userData) => {
-
   const backendData = {
     name: userData.fullName || userData.name || 'New User',
+    username: userData.username,
     email: userData.email,
     password: userData.password,
     role: userData.role || "user",
-    longitude: userData.longitude || 75.8577, // Default to Indore
-    latitude: userData.latitude || 22.7196
+    longitude: userData.longitude || 0,
+    latitude: userData.latitude || 0
   };
 
   const { data } = await api.post('/auth/signup', backendData);
@@ -131,20 +131,21 @@ export const signupUser = async (userData) => {
 
 
 export const forgotPassword = async (email) => {
-  await delay(1500);
-  return { message: 'Password reset link sent to your email' };
-
-
-
+  const { data } = await api.post('/auth/forgot-password', { email });
+  return data;
 };
 
 
 export const resetPassword = async (token, newPassword) => {
-  await delay(1500);
-  return { message: 'Password has been reset successfully' };
+  const { data } = await api.put(`/auth/reset-password/${token}`, { password: newPassword });
+  return data;
+};
 
 
-
+export const googleLoginUser = async (idToken) => {
+  const { data } = await api.post('/auth/google-login', { idToken });
+  setAccessToken(data.token);
+  return data;
 };
 
 

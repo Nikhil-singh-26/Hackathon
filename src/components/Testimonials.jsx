@@ -4,7 +4,7 @@ import './Testimonials.css';
 const testimonials = [
     {
         name: "Nikhil Singh",
-        role: "Bride",
+        role: "GROOM",
         text: "EventFlex made our wedding planning completely stress-free. We found all our vendors through the platform, and the budget tracker kept us perfectly in line. Highly recommended!"
     },
     {
