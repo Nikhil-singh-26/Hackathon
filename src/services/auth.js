@@ -3,7 +3,11 @@ import axios from 'axios';
 
 
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error('VITE_API_URL environment variable is not defined');
+}
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -99,18 +103,6 @@ api.interceptors.response.use(
 
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
-const MOCK_USER = {
-  id: '1',
-  name: 'Nikhil Singh',
-  email: 'nikhil@eventflex.com',
-  avatar: null,
-};
-
-const MOCK_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mock-jwt-token';
-
-
-
 
 
 

@@ -12,10 +12,15 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 import io from 'socket.io-client';
 
-const API_URL = 'http://localhost:5000';
-const ENDPOINT = 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL;
+if (!API_URL) {
+  throw new Error('VITE_API_URL is not defined');
+}
+// base endpoint for socket.io (strip trailing /api if present)
+const ENDPOINT = API_URL.replace(/\/api\/?$/, '');
 let socket;
 
 export default function ChatPage() {
@@ -51,7 +56,7 @@ export default function ChatPage() {
       setLoading(true);
       try {
         const token = localStorage.getItem('token');
-        const { data } = await axios.get(`${API_URL}/api/chat/${chatId}`, {
+        const { data } = await axios.get(`${API_URL}/chat/${chatId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setMessages(data);
@@ -66,7 +71,7 @@ export default function ChatPage() {
     const fetchChatInfo = async () => {
        try {
         const token = localStorage.getItem('token');
-        const { data } = await axios.get(`${API_URL}/api/chat`, {
+        const { data } = await axios.get(`${API_URL}/chat`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const currentChat = data.find(c => c._id === chatId);
@@ -106,7 +111,7 @@ export default function ChatPage() {
         const token = localStorage.getItem('token');
         const messageText = newMessage;
         setNewMessage("");
-        const { data } = await axios.post(`${API_URL}/api/chat/send`, {
+        const { data } = await axios.post(`${API_URL}/chat/send`, {
           content: messageText,
           chatId: chatId
         }, {

@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react';
 import { Star, MapPin, Loader2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 import { MOCK_VENDORS } from '../constants/vendors';
 import './MarketplacePreview.css';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL;
+if (!API_URL) {
+    throw new Error('VITE_API_URL is not defined');
+}
 
 export default function MarketplacePreview() {
     const [showAll, setShowAll] = useState(false);

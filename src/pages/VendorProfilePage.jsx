@@ -7,9 +7,13 @@ import {
 import './VendorProfilePage.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 import { MOCK_VENDORS } from '../constants/vendors';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL;
+if (!API_URL) {
+    throw new Error('VITE_API_URL is not defined');
+}
 
 
 export default function VendorProfilePage() {

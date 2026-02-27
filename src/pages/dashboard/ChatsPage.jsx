@@ -8,12 +8,17 @@ import {
   ChevronRight
 } from 'lucide-react';
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 import { useAuth } from '../../hooks/useAuth';
 
 import io from 'socket.io-client';
 
-const API_URL = 'http://localhost:5000/api';
-const ENDPOINT = 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL;
+if (!API_URL) {
+  throw new Error('VITE_API_URL is not defined');
+}
+// socket endpoint should be base URL without the `/api` suffix
+const ENDPOINT = API_URL.replace(/\/api\/?$/, '');
 
 export default function ChatsPage() {
   const { user } = useAuth();

@@ -10,9 +10,13 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL;
+if (!API_URL) {
+  throw new Error('VITE_API_URL is not defined');
+}
 
 export default function OrganizerDashboard() {
   const { user } = useAuth();
