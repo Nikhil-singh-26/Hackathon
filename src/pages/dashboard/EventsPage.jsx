@@ -4,13 +4,37 @@ import { useState } from 'react';
 export default function EventsPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [events, setEvents] = useState([]);
+  const [selectedDates, setSelectedDates] = useState([]);
 
   const handleCreate = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const newEvent = Object.fromEntries(formData.entries());
+
+    // Format dates cleanly
+    newEvent.date = selectedDates.length > 0
+      ? selectedDates.join(" • ")
+      : "No date selected";
+
     setEvents([...events, { ...newEvent, id: Date.now() }]);
     setIsCreating(false);
+    setSelectedDates([]);
+  };
+
+  const handleAddDate = (e) => {
+    const val = e.target.value;
+    if (val && !selectedDates.includes(val)) {
+      // Format to slightly nicer string
+      const dateObj = new Date(val);
+      const formatted = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      if (!selectedDates.includes(formatted)) {
+        setSelectedDates([...selectedDates, formatted]);
+      }
+    }
+  };
+
+  const removeDate = (dateToRemove) => {
+    setSelectedDates(selectedDates.filter(d => d !== dateToRemove));
   };
 
   return (
@@ -46,8 +70,33 @@ export default function EventsPage() {
                     <input name="name" type="text" className="os-form-input" placeholder="e.g. Annual Tech Conference" required />
                   </div>
                   <div className="os-form-group">
-                    <label className="os-form-label">Date</label>
-                    <input name="date" type="date" className="os-form-input" required />
+                    <label className="os-form-label">Available Dates</label>
+                    <div style={{ position: 'relative' }}>
+                      <Calendar size={18} style={{ position: 'absolute', left: '12px', top: '12px', color: 'var(--color-accent)', pointerEvents: 'none' }} />
+                      <input
+                        type="date"
+                        className="os-form-input"
+                        onChange={handleAddDate}
+                        style={{ paddingLeft: '40px', colorScheme: 'dark' }}
+                      />
+                    </div>
+                    {selectedDates.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-3 p-2 rounded-lg" style={{ background: 'var(--color-surface-dark)', border: 'var(--glass-border)' }}>
+                        {selectedDates.map(date => (
+                          <div key={date} className="flex items-center gap-2 px-3 py-1 bg-black/40 rounded-full text-sm border border-white/5">
+                            <span style={{ color: 'var(--color-text-main)' }}>{date}</span>
+                            <button
+                              type="button"
+                              onClick={() => removeDate(date)}
+                              style={{ color: 'var(--color-text-muted)', display: 'flex' }}
+                              className="hover:text-red-400 transition-colors"
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="os-form-group">

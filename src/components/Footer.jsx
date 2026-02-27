@@ -15,10 +15,10 @@ export default function Footer() {
                             Your one-stop intelligent platform to plan, manage, and execute perfect events without the stress.
                         </p>
                         <div className="social-links flex gap-4 mt-6">
-                            <a href="#" className="social-icon"><Twitter size={20} /></a>
-                            <a href="#" className="social-icon"><Instagram size={20} /></a>
-                            <a href="#" className="social-icon"><Linkedin size={20} /></a>
-                            <a href="#" className="social-icon"><Facebook size={20} /></a>
+                            <a href="https://x.com/ShekharVer95585" target="_blank" rel="noopener noreferrer" className="social-icon"><Twitter size={20} /></a>
+                            <a href="https://www.instagram.com/ishan_6408?igsh=MTJ3ZHh6ZXl2OXNyNQ==" target="_blank" rel="noopener noreferrer" className="social-icon"><Instagram size={20} /></a>
+                            <a href="https://www.linkedin.com/in/nikhil-singh-981677379?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer" className="social-icon"><Linkedin size={20} /></a>
+                            <a href="https://www.facebook.com/prathmesh.dandekar.3?mibextid=rS40aB7S9Ucbxw6v" target="_blank" rel="noopener noreferrer" className="social-icon"><Facebook size={20} /></a>
                         </div>
                     </div>
 
