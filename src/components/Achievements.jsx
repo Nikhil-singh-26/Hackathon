@@ -2,10 +2,10 @@ import { useEffect, useState, useRef } from 'react';
 import './Achievements.css';
 
 const stats = [
-    { value: 10000, label: "Events Managed", prefix: "", suffix: "+" },
-    { value: 5000, label: "Verified Vendors", prefix: "", suffix: "+" },
-    { value: 98, label: "Customer Satisfaction", prefix: "", suffix: "%" },
-    { value: 50, label: "Bookings", prefix: "₹", suffix: "Cr+" }
+    { value: 1, label: "Events Managed", prefix: "", suffix: "" },
+    { value: 4, label: "Verified Vendors", prefix: "", suffix: "" },
+    { value: 100, label: "Customer Satisfaction", prefix: "", suffix: "%" },
+    { value: 0, label: "Bookings", prefix: "₹", suffix: "" }
 ];
 
 export default function Achievements() {

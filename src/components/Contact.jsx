@@ -15,21 +15,21 @@ export default function Contact() {
                                 <div className="info-icon"><Mail size={20} /></div>
                                 <div>
                                     <h4>Email Us</h4>
-                                    <p>prathmeshdandekar@gmail.com</p>
+                                    <p><a href="mailto:prathmeshdandekar@gmail.com" className="contact-link">prathmeshdandekar@gmail.com</a></p>
                                 </div>
                             </div>
                             <div className="info-item flex items-center gap-4">
                                 <div className="info-icon"><Phone size={20} /></div>
                                 <div>
                                     <h4>Call Us</h4>
-                                    <p>+91 94079 35884</p>
+                                    <p><a href="tel:+919407935884" className="contact-link">+91 94079 35884</a></p>
                                 </div>
                             </div>
                             <div className="info-item flex items-center gap-4">
                                 <div className="info-icon"><MapPin size={20} /></div>
                                 <div>
                                     <h4>Visit Us</h4>
-                                    <p>Gandhi nagar SUAS<br />Indore, 493221</p>
+                                    <p><a href="https://www.google.com/maps/search/?api=1&query=Symbiosis+University+of+Applied+Sciences+Indore" target="_blank" rel="noopener noreferrer" className="contact-link">Gandhi nagar SUAS<br />Indore, 493221</a></p>
                                 </div>
                             </div>
                         </div>
