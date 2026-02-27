@@ -58,5 +58,22 @@ export const MOCK_VENDORS = [
         faqs: [
             { question: "Jain food available?", answer: "Yes, specialized Jain chefs available." }
         ]
+    },
+    {
+        _id: "mock-5",
+        businessName: "Indore Royal Catering",
+        name: "Indore Royal Catering",
+        category: "Catering",
+        rating: 4.9,
+        reviewsCount: 42,
+        startingPrice: "₹500/plate",
+        images: ["https://images.unsplash.com/photo-1555243896-c709bfa0b564?auto=format&fit=crop&q=80&w=800"],
+        description: "Best authentic Indori taste for your royal events.",
+        location_str: "Vijay Nagar, Indore",
+        latitude: 22.7533,
+        longitude: 75.8937,
+        faqs: [
+            { question: "Do you serve Indori breakfast?", answer: "Yes, Poha Jalebi is our specialty!" }
+        ]
     }
 ];

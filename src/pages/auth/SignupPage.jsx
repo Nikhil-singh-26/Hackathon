@@ -126,6 +126,20 @@ export default function SignupPage() {
     setIsLoading(true);
 
     if ((selectedRole === 'vendor' || selectedRole === 'organizer') && !coordinates) {
+      // Fallback for demo purposes if geolocation fails
+      if (locationStatus === 'error' || locationStatus === 'idle') {
+          const confirmManual = window.confirm("Location access failed or not provided. Should we use our default hub (Indore) for your account?");
+          if (confirmManual) {
+              const indoreCoords = { lat: 22.7196, lng: 75.8577 };
+              setCoordinates(indoreCoords);
+              setAddress("Indore Hub (Manual Fallback)");
+              setLocationStatus('success');
+              // We'll proceed in the next submit click after state update
+              setIsLoading(false);
+              return;
+          }
+      }
+
       setServerError(
         selectedRole === 'vendor'
           ? 'Vendors must provide their physical location to be paired with local organizers.'

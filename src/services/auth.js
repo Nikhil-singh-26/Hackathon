@@ -119,9 +119,9 @@ export const signupUser = async (userData) => {
     name: userData.fullName || userData.name || 'New User',
     email: userData.email,
     password: userData.password,
-    role: "user",
-    longitude: 77.2090,
-    latitude: 28.6139
+    role: userData.role || "user",
+    longitude: userData.longitude || 75.8577, // Default to Indore
+    latitude: userData.latitude || 22.7196
   };
 
   const { data } = await api.post('/auth/signup', backendData);
