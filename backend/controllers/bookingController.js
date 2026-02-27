@@ -3,16 +3,19 @@ const User = require("../models/User");
 
 const requestBooking = async (req, res) => {
   try {
-    const { vendorId, date, message } = req.body;
+    const { vendorId, date, eventType, guestsCount, specialRequirements, message } = req.body;
 
-    if (!vendorId || !date) {
-      return res.status(400).json({ message: "Vendor ID and Date are required" });
+    if (!vendorId || !date || !eventType) {
+      return res.status(400).json({ message: "Vendor ID, Date, and Event Type are required" });
     }
 
     const booking = await Booking.create({
       organizer: req.user.id,
       vendor: vendorId,
       date,
+      eventType,
+      guestsCount: guestsCount || 0,
+      specialRequirements,
       message,
     });
 

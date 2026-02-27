@@ -65,6 +65,15 @@ const userSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    supportedEvents: {
+      type: [String],
+      default: [],
+    },
+    pricingDetails: {
+      basePrice: { type: Number, default: 0 },
+      vegPlatePrice: { type: Number, default: 0 },
+      nonVegPlatePrice: { type: Number, default: 0 },
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },

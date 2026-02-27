@@ -59,7 +59,9 @@ const updateVendorProfile = async (req, res) => {
       isLocationSharing,
       status,
       longitude,
-      latitude
+      latitude,
+      supportedEvents,
+      pricingDetails
     } = req.body;
 
     const updates = {
@@ -69,6 +71,9 @@ const updateVendorProfile = async (req, res) => {
       isLocationSharing,
       status
     };
+
+    if (supportedEvents) updates.supportedEvents = supportedEvents;
+    if (pricingDetails) updates.pricingDetails = pricingDetails;
 
     if (longitude !== undefined && latitude !== undefined) {
       updates.location = {
@@ -93,7 +98,7 @@ const updateVendorProfile = async (req, res) => {
 
 const getVendors = async (req, res) => {
   try {
-    const { search } = req.query;
+    const { search, eventType, minPrice, maxPrice } = req.query;
     let query = { role: "vendor", status: "active" };
 
     if (search) {
@@ -102,6 +107,18 @@ const getVendors = async (req, res) => {
         { name: { $regex: search, $options: "i" } },
         { description: { $regex: search, $options: "i" } }
       ];
+    }
+
+    if (eventType) {
+      // Find vendors that either don't have this array explicitly empty (to be safe with old data)
+      // or specifically include the desired event
+      query.supportedEvents = { $in: [eventType] };
+    }
+
+    if (minPrice || maxPrice) {
+      query["pricingDetails.basePrice"] = {};
+      if (minPrice) query["pricingDetails.basePrice"].$gte = Number(minPrice);
+      if (maxPrice) query["pricingDetails.basePrice"].$lte = Number(maxPrice);
     }
 
     const vendors = await User.find(query).select("-password +availability");

@@ -20,24 +20,35 @@ export default function MarketplacePreview() {
     const [isSearching, setIsSearching] = useState(false);
     const [searchStatus, setSearchStatus] = useState('idle');
 
-    useEffect(() => {
-        const fetchInitialVendors = async () => {
-            setLoading(true);
-            try {
-                const res = await axios.get(`${API_URL}/users/vendors`);
-                if (res.data.data && res.data.data.length > 0) {
-                    setVendorsList(res.data.data);
-                } else {
-                    setVendorsList(MOCK_VENDORS);
-                }
-                setLoading(false);
-            } catch (err) {
-                console.error("Failed to fetch vendors", err);
-                setVendorsList(MOCK_VENDORS);
-                setLoading(false);
+    // Filter states
+    const [eventTypeFilter, setEventTypeFilter] = useState("");
+    const [minPriceFilter, setMinPriceFilter] = useState("");
+    const [maxPriceFilter, setMaxPriceFilter] = useState("");
+
+    const fetchVendors = async (filters = {}) => {
+        setLoading(true);
+        try {
+            const params = {};
+            if (filters.eventType) params.eventType = filters.eventType;
+            if (filters.minPrice) params.minPrice = filters.minPrice;
+            if (filters.maxPrice) params.maxPrice = filters.maxPrice;
+
+            const res = await axios.get(`${API_URL}/users/vendors`, { params });
+            if (res.data.data && res.data.data.length > 0) {
+                setVendorsList(res.data.data);
+            } else {
+                setVendorsList([]);
             }
-        };
-        fetchInitialVendors();
+            setLoading(false);
+        } catch (err) {
+            console.error("Failed to fetch vendors", err);
+            setVendorsList([]);
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchVendors();
     }, []);
 
     const handleFindNearby = () => {
@@ -113,6 +124,67 @@ export default function MarketplacePreview() {
                     {searchStatus === 'no-results' && <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>No vendors found nearby. Showing featured vendors instead.</p>}
                 </div>
 
+                {/* Filters Section */}
+                <div className="flex flex-wrap gap-4 justify-center items-end mb-8 mt-4">
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium mb-1 text-muted text-left">Event Type</label>
+                        <select 
+                            className="bg-surface border border-white/10 rounded-lg p-3 text-white focus:border-primary outline-none min-w-[200px]"
+                            value={eventTypeFilter}
+                            onChange={(e) => setEventTypeFilter(e.target.value)}
+                        >
+                            <option value="">All Events</option>
+                            <option value="Marriage">Marriage</option>
+                            <option value="Education Seminar">Education Seminar</option>
+                            <option value="Birthday">Birthday</option>
+                            <option value="Corporate">Corporate Events</option>
+                        </select>
+                    </div>
+                    
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium mb-1 text-muted text-left">Price Range</label>
+                        <div className="flex gap-2 items-center">
+                            <input 
+                                type="number" 
+                                placeholder="Min ₹" 
+                                className="w-24 bg-surface border border-white/10 rounded-lg p-3 text-white focus:border-primary outline-none"
+                                value={minPriceFilter}
+                                onChange={(e) => setMinPriceFilter(e.target.value)}
+                            />
+                            <span>-</span>
+                            <input 
+                                type="number" 
+                                placeholder="Max ₹" 
+                                className="w-24 bg-surface border border-white/10 rounded-lg p-3 text-white focus:border-primary outline-none"
+                                value={maxPriceFilter}
+                                onChange={(e) => setMaxPriceFilter(e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                        <button 
+                            className="solid-btn py-3"
+                            onClick={() => fetchVendors({ eventType: eventTypeFilter, minPrice: minPriceFilter, maxPrice: maxPriceFilter })}
+                        >
+                            Apply Filter
+                        </button>
+                        {(eventTypeFilter || minPriceFilter || maxPriceFilter) && (
+                            <button 
+                                className="glass-btn py-3"
+                                onClick={() => {
+                                    setEventTypeFilter("");
+                                    setMinPriceFilter("");
+                                    setMaxPriceFilter("");
+                                    fetchVendors();
+                                }}
+                            >
+                                Clear
+                            </button>
+                        )}
+                    </div>
+                </div>
+
                 {loading ? (
                     <div className="flex justify-center py-20">
                         <Loader2 className="spin text-primary" size={40} />
@@ -149,7 +221,7 @@ export default function MarketplacePreview() {
                                     <div className="flex justify-between items-center mt-4">
                                         <div className="vendor-price">
                                             <span className="price-label">Starts at</span>
-                                            <p>{vendor.startingPrice || "₹15,000"}</p>
+                                            <p>{vendor?.pricingDetails?.basePrice ? `₹${vendor.pricingDetails.basePrice}` : (vendor.startingPrice || "₹15,000")}</p>
                                         </div>
                                         <Link
                                             to={`/vendor/${vendor._id}`}

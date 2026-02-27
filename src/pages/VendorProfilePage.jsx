@@ -45,6 +45,12 @@ export default function VendorProfilePage() {
     const [bookingRequested, setBookingRequested] = useState(false);
     const [mapCenter, setMapCenter] = useState([22.7196, 75.8577]); // Default to Indore
     const [mapCoords, setMapCoords] = useState(null);
+    const [showBookingModal, setShowBookingModal] = useState(false);
+    const [bookingData, setBookingData] = useState({
+        eventType: "",
+        guestsCount: 0,
+        specialRequirements: ""
+    });
 
     useEffect(() => {
         const fetchVendorData = async () => {
@@ -127,9 +133,14 @@ export default function VendorProfilePage() {
         navigate('/dashboard/chat');
     };
 
-    const handleBooking = async () => {
+    const handleBooking = async (e) => {
+        if (e) e.preventDefault();
         if (!selectedDate) {
             alert("Please select a date first");
+            return;
+        }
+        if (!bookingData.eventType) {
+            alert("Please select an Event Type");
             return;
         }
         try {
@@ -137,13 +148,19 @@ export default function VendorProfilePage() {
             await axios.post(`${API_URL}/bookings`, {
                 vendorId: id,
                 date: selectedDate,
-                message: `Booking request for ${selectedDate}`
+                eventType: bookingData.eventType,
+                guestsCount: bookingData.guestsCount,
+                specialRequirements: bookingData.specialRequirements,
+                message: `Booking request for ${bookingData.eventType} on ${selectedDate}`
             }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            setShowBookingModal(false);
+            setBookingData({ eventType: "", guestsCount: 0, specialRequirements: "" });
             setBookingRequested(true);
         } catch (err) {
             console.error("Booking failed", err);
+            alert(err.response?.data?.message || "Booking failed");
         }
     };
 
@@ -167,9 +184,12 @@ export default function VendorProfilePage() {
         experience: "5+ Years",
         highlights: ["Verified", "Professional Staff", "Quick Response"],
         packages: [
-            { name: "Standard", price: "Starting from â‚¹15,000", features: ["Full service", "Basic support"] }
+            { name: "Standard", price: "Starting from ₹15,000", features: ["Full service", "Basic support"] }
         ],
-        platePricing: { veg: "N/A", nonVeg: "N/A" },
+        platePricing: vendor?.pricingDetails ? {
+            veg: vendor.pricingDetails.vegPlatePrice ? `₹${vendor.pricingDetails.vegPlatePrice}` : "N/A",
+            nonVeg: vendor.pricingDetails.nonVegPlatePrice ? `₹${vendor.pricingDetails.nonVegPlatePrice}` : "N/A"
+        } : { veg: "N/A", nonVeg: "N/A" },
         reviewsList: [],
         faqs: [
             { question: "How to book?", answer: "Select a date and click 'Request Booking'." }
@@ -180,15 +200,16 @@ export default function VendorProfilePage() {
         options: "Flexible",
         catering: "N/A",
         decoration: "Available",
+        supportedEvents: vendor?.supportedEvents?.length > 0 ? vendor.supportedEvents : ["Marriage", "Birthday", "Corporate"],
         ...vendor,
-        images: vendor.images?.length ? vendor.images : [
+        images: vendor?.images?.length ? vendor.images : [
             "https://images.unsplash.com/photo-1519167758481-83f5affe0fb5?auto=format&fit=crop&q=80&w=1200",
             "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=1200"
         ],
-        startingPrice: vendor.startingPrice || "â‚¹15,000",
-        category: vendor.category || "Service Provider",
-        location_str: vendor.location_str || "Near you",
-        description: vendor.description || "Premium vendor providing top-notch services for your events."
+        startingPrice: vendor?.pricingDetails?.basePrice ? `₹${vendor.pricingDetails.basePrice}` : (vendor?.startingPrice || "₹15,000"),
+        category: vendor?.category || "Service Provider",
+        location_str: vendor?.location_str || "Near you",
+        description: vendor?.description || "Premium vendor providing top-notch services for your events."
     };
 
 
@@ -246,7 +267,7 @@ export default function VendorProfilePage() {
                                     </button>
                                     <button
                                         className="solid-btn"
-                                        onClick={handleBooking}
+                                        onClick={() => setShowBookingModal(true)}
                                     >
                                         Request Booking
                                     </button>
@@ -288,6 +309,13 @@ export default function VendorProfilePage() {
                         <p className="vp-description">{displayVendor.description}</p>
                         <div className="vp-experience mt-4 font-semibold text-primary">
                             âœ“ {displayVendor.experience} Experience
+                        </div>
+                        <div className="vp-highlights mt-4 flex flex-wrap gap-2 mb-4">
+                            {displayVendor.supportedEvents.map((evt, i) => (
+                                <span key={i} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium border border-primary/20">
+                                    {evt}
+                                </span>
+                            ))}
                         </div>
                         <div className="vp-highlights mt-4 grid grid-cols-2 gap-2">
                             {displayVendor.highlights.map((hlt, i) => (
@@ -465,7 +493,7 @@ export default function VendorProfilePage() {
                                 {!bookingRequested ? (
                                     <button
                                         className="solid-btn w-full mb-3 text-lg py-3 shadow-lg"
-                                        onClick={handleBooking}
+                                        onClick={() => setShowBookingModal(true)}
                                         disabled={availabilityStatus !== 'available'}
                                     >
                                         Request Booking Now
@@ -517,6 +545,73 @@ export default function VendorProfilePage() {
 
                 </div>
             </div>
+
+            {/* Booking Modal */}
+            {showBookingModal && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-surface border border-white/10 p-6 rounded-2xl w-full max-w-md shadow-2xl relative">
+                        <button 
+                            className="absolute top-4 right-4 text-muted hover:text-white"
+                            onClick={() => setShowBookingModal(false)}
+                        >
+                            &times;
+                        </button>
+                        <h2 className="text-2xl font-bold mb-6">Complete Booking Request</h2>
+                        <form onSubmit={handleBooking} className="flex flex-col gap-4">
+                            <div>
+                                <label className="block text-sm font-medium mb-1 text-muted">Date</label>
+                                <input 
+                                    type="text" 
+                                    value={selectedDate} 
+                                    readOnly 
+                                    className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white"
+                                />
+                            </div>
+                            
+                            <div>
+                                <label className="block text-sm font-medium mb-1 text-muted">Event Type</label>
+                                <select 
+                                    required
+                                    className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-primary outline-none"
+                                    value={bookingData.eventType}
+                                    onChange={(e) => setBookingData({...bookingData, eventType: e.target.value})}
+                                >
+                                    <option value="" disabled>Select Event Type</option>
+                                    {displayVendor.supportedEvents.map(evt => (
+                                        <option key={evt} value={evt} className="bg-surface">{evt}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium mb-1 text-muted">Number of Guests / Plates (approx)</label>
+                                <input 
+                                    type="number" 
+                                    min="0"
+                                    className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-primary outline-none"
+                                    value={bookingData.guestsCount}
+                                    onChange={(e) => setBookingData({...bookingData, guestsCount: e.target.value})}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium mb-1 text-muted">Special Requirements</label>
+                                <textarea 
+                                    rows="3"
+                                    className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-primary outline-none resize-none"
+                                    placeholder="Any specific decorations, food items, or other requests..."
+                                    value={bookingData.specialRequirements}
+                                    onChange={(e) => setBookingData({...bookingData, specialRequirements: e.target.value})}
+                                ></textarea>
+                            </div>
+
+                            <button type="submit" className="solid-btn w-full mt-4 py-3">
+                                Send Request to Vendor
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

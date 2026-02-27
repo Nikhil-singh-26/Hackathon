@@ -16,6 +16,18 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    eventType: {
+      type: String,
+      required: true,
+    },
+    guestsCount: {
+      type: Number,
+      default: 0,
+    },
+    specialRequirements: {
+      type: String,
+      trim: true,
+    },
     status: {
       type: String,
       enum: ["pending", "confirmed", "rejected"],
