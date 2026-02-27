@@ -8,6 +8,18 @@ import './VendorProfilePage.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 axios.defaults.withCredentials = true;
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// Fix Leaflet marker icon issue
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
+
 import { MOCK_VENDORS } from '../constants/vendors';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -443,17 +455,25 @@ export default function VendorProfilePage() {
                         <h3 className="vp-sidebar-title">Location</h3>
                         <p className="text-sm mb-4"><MapPin size={14} className="inline mr-1" /> {displayVendor.location_str}</p>
                         <div className="vp-map-container h-48 rounded-lg overflow-hidden relative shadow-inner">
-                            <iframe
-                                width="100%"
-                                height="100%"
-                                style={{ border: 0 }}
-                                loading="lazy"
-                                allowFullScreen
-                                src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBgfI-N7c2__9LWuJj3pS2UVua3S-Q2PRI&q=${encodeURIComponent(displayVendor.location_str)}`}
-                                title="Vendor Location"
-                            ></iframe>
-                            {}
-                            <div className="absolute inset-0 pointer-events-none border border-white/10 rounded-lg"></div>
+                            {/* Leaflet Map instead of Google Maps */}
+                            <MapContainer
+                                center={displayVendor.coordinates || [28.6139, 77.2090]}
+                                zoom={13}
+                                scrollWheelZoom={false}
+                                style={{ height: '100%', width: '100%', zIndex: 1 }}
+                            >
+                                <TileLayer
+                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                />
+                                <Marker position={displayVendor.coordinates || [28.6139, 77.2090]}>
+                                    <Popup>
+                                        {displayVendor.businessName || displayVendor.name}<br />
+                                        {displayVendor.location_str}
+                                    </Popup>
+                                </Marker>
+                            </MapContainer>
+                            <div className="absolute inset-0 pointer-events-none border border-white/10 rounded-lg" style={{ zIndex: 2 }}></div>
                         </div>
                     </section>
 
