@@ -27,7 +27,7 @@ const io = new Server(server, {
 
 
 const allowedOrigins = process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',') : ["http://localhost:5173"];
-app.use(cors({ origin:["http://localhost:5173,https://hackathon-plum-five.vercel.app/"], credentials: true }));
+app.use(cors({ origin:["https://hackathon-plum-five.vercel.app/"], credentials: true }));
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
 
