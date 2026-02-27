@@ -25,6 +25,7 @@ import VendorDashboard from './pages/dashboard/VendorDashboard';
 import OrganizerDashboard from './pages/dashboard/OrganizerDashboard';
 import ChatsPage from './pages/dashboard/ChatsPage';
 import ChatPage from './pages/ChatPage';
+import LegalPage from './pages/legal/LegalPage';
 
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { useAuth } from './hooks/useAuth';
@@ -54,6 +55,7 @@ function App() {
       {}
       <Route path="/" element={<LandingPage />} />
       <Route path="/vendor/:id" element={<><Navbar /><VendorProfilePage /><Footer /></>} />
+      <Route path="/legal/:type" element={<><Navbar /><LegalPage /><Footer /></>} />
 
       {}
       <Route path="/auth/login" element={<LoginPage />} />

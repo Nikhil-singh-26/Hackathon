@@ -1,4 +1,5 @@
 import { Leaf, Twitter, Instagram, Linkedin, Facebook } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 
 export default function Footer() {
@@ -44,10 +45,10 @@ export default function Footer() {
                         <div className="link-group">
                             <h4>Legal</h4>
                             <ul>
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#">Terms of Service</a></li>
-                                <li><a href="#">Cookie Policy</a></li>
-                                <li><a href="#">Refund Policy</a></li>
+                                <li><Link to="/legal/privacy-policy">Privacy Policy</Link></li>
+                                <li><Link to="/legal/terms-of-service">Terms of Service</Link></li>
+                                <li><Link to="/legal/cookie-policy">Cookie Policy</Link></li>
+                                <li><Link to="/legal/refund-policy">Refund Policy</Link></li>
                             </ul>
                         </div>
                     </div>
